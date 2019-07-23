@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 // Register a new user
-const registerUser = (req, res) => {
+exports.registerUser = (req, res, next) => {
   const { name, email, password } = req.body;
   // Check if email is already registered
   User.findOne({ email: email }).then(user => {
@@ -43,10 +43,21 @@ const registerUser = (req, res) => {
 };
 
 // Login an existing user and return JWT
-const loginUser = (req, res) => {
-  console.log(req);
-};
-
-module.exports = {
-  registerUser
+exports.loginUser = (req, res) => {
+  const { email, password } = req.body;
+  //   Find user by email
+  User.findOne({ email }).then(user => {
+    if (!user) {
+      return res.status(404).json({ email: "User Not Found" });
+    }
+    //  use bcrypt to compare passwords
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        //   if passwords match, send jwt
+        res.json({ message: "Success" });
+      } else {
+        return res.status(400).json({ password: "Password Incorrect" });
+      }
+    });
+  });
 };

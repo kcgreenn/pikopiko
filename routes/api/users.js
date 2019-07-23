@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../../controllers/auth");
+const { registerUser, loginUser } = require("../../controllers/auth");
 
 // @route   Get api/users/test
 // @desc    Tests Users route
@@ -13,11 +13,11 @@ router.get("/test", (req, res) => {
 // @route   POST api/users/test
 // @desc    Register new user
 // @access  Public
-router.post("/register", (req, res) => authController.registerUser(req, res));
+router.post("/register", registerUser);
 
-// @route   GET api/users/login
+// @route   POST api/users/login
 // @desc    Login User / Return JWT
 // @access  Public
-router.get("/login", (req, res) => authController.loginUser(req, res));
+router.post("/login", loginUser);
 
 module.exports = router;
