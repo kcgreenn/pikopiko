@@ -9,7 +9,10 @@ const profile = require("./routes/api/profile");
 // Initialize Express as app
 const app = express();
 
-// express middleware
+// bodyparser middleware
+// parse data sent from client
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // DB Config
 const db = require("./config/keys").MONGODB_URI;
