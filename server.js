@@ -1,7 +1,17 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 // Initialize Express as app
 const app = express();
+
+// DB Config
+const db = require("./config/keys").MONGODB_URI;
+
+// Connect to mongodb
+mongoose
+  .connect(db)
+  .then(() => console.log("Connected to mongodb"))
+  .catch(error => console.error(error));
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
