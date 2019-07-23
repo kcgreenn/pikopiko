@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const gravatar = require("gravatar");
-const bcrypt = require("bcryptjs");
 
-// Load User Model
-const User = require("../../models/User");
+const authController = require("../../controllers/auth");
 
 // @route   Get api/users/test
 // @desc    Tests Users route
@@ -16,41 +13,11 @@ router.get("/test", (req, res) => {
 // @route   POST api/users/test
 // @desc    Register new user
 // @access  Public
-router.post("/register", (req, res) => {
-  const { name, email, password } = req.body;
-  // Check if email is already registered
-  User.findOne({ email: email }).then(user => {
-    if (user) {
-      //   Return error if email is already registered
-      return res
-        .status(400)
-        .json({ error: "Email is already in registered on this site" });
-    } else {
-      //   otherwise create a new user
-      //   Generate gravatar avatar
-      const avatar = gravatar.url(email, {
-        s: "200", // Size
-        r: "pg", //Rating
-        d: "mm" //Default
-      });
-      const newUser = new User({ name, email, avatar, password });
+router.post("/register", (req, res) => authController.registerUser(req, res));
 
-      // Encrypt Password before storing in database
-      bcrypt.genSalt(10, (error, salt) => {
-        if (error) throw error;
-        bcrypt.hash(password, salt, (error, hash) => {
-          if (error) throw error;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then(user => {
-              res.json({ user });
-            })
-            .catch(error => console.log(error));
-        });
-      });
-    }
-  });
-});
+// @route   GET api/users/login
+// @desc    Login User / Return JWT
+// @access  Public
+router.get("/login", (req, res) => authController.loginUser(req, res));
 
 module.exports = router;
