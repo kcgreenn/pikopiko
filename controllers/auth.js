@@ -5,6 +5,7 @@ require("dotenv").config();
 
 // Load Input validation
 const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../validation/login");
 
 // Load User Model
 const User = require("../models/User");
@@ -54,11 +55,18 @@ exports.registerUser = (req, res, next) => {
 
 // Login an existing user and return JWT
 exports.loginUser = (req, res) => {
+  // validate user inputs
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   const { email, password } = req.body;
   //   Find user by email
   User.findOne({ email }).then(user => {
     if (!user) {
-      return res.status(404).json({ email: "User Not Found" });
+      errors.email = "User not found";
+      return res.status(404).json(errors.email);
     }
     //  use bcrypt to compare passwords
     bcrypt.compare(password, user.password).then(isMatch => {
@@ -79,7 +87,8 @@ exports.loginUser = (req, res) => {
           }
         );
       } else {
-        return res.status(400).json({ password: "Password Incorrect" });
+        errors.password = "Password is Incorrect";
+        return res.status(400).json(errors.password);
       }
     });
   });
