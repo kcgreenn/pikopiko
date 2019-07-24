@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 
 const { registerUser, loginUser } = require("../../controllers/auth");
 
@@ -19,5 +20,16 @@ router.post("/register", registerUser);
 // @desc    Login User / Return JWT
 // @access  Public
 router.post("/login", loginUser);
+
+// @route   GET api/users/current
+// @desc    Return current user
+// @access  Private
+router.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json({ message: "Success" });
+  }
+);
 
 module.exports = router;
