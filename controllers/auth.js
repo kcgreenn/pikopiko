@@ -3,11 +3,20 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+// Load Input validation
+const validateRegisterInput = require("../validation/register");
+
 // Load User Model
 const User = require("../models/User");
 
 // Register a new user
 exports.registerUser = (req, res, next) => {
+  // validate user inputs
+  const { errors, isValid } = validateRegisterInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   const { name, email, password } = req.body;
   // Check if email is already registered
   User.findOne({ email: email }).then(user => {
