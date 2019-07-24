@@ -28,7 +28,6 @@ exports.createProfile = (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-
   // Pull data from Fields
   let profileFields = ({
     handle,
@@ -44,7 +43,7 @@ exports.createProfile = (req, res) => {
     linkedin,
     youtube
   } = req.body);
-  console.log(profileFields);
+  profileFields.userId = req.user.id;
   //   Split interests into array
   profileFields.interests =
     typeof profileFields.interests !== undefined
@@ -57,29 +56,41 @@ exports.createProfile = (req, res) => {
     instagram,
     linkedin
   };
-
-  Profile.findOne({ user: req.user.id }).then(profile => {
-    if (!profile) {
-      // If profile does not exist
-      // Check if handle exists
-      Profile.findOne({ handle: profileFields.handle })
-        .then(profile => {
-          errors.handle = "That handle is already in use.";
-          res.status(400).json(errors);
-        })
-        .catch(error => {
-          errors.error = error;
-          res.status(404).json(errors);
-        });
-      // Create Profile
-      new Profile(profileFields)
-        .save()
-        .then(profile => res.json(profile))
-        .catch(error =>
-          res.status(404).json({ error: "Could not create profile" })
-        );
-    }
-  });
+  // Check if user already has a profile
+  Profile.findOne({ userId: req.user.id })
+    .then(profile => {
+      // If user does not have a profile, check if the handle is already being used
+      if (!profile) {
+        Profile.findOne({ handle: profileFields.handle })
+          .then(profile => {
+            // If the handle is being used, inform user
+            if (profile) {
+              errors.handle = "That handle is already in use.";
+              res.status(400).json(errors);
+            } else {
+              // If handle is not being used, create new profile
+              new Profile(profileFields)
+                .save()
+                .then(profile => res.json(profile))
+                .catch(error => {
+                  errors.db = "Could not create new profile in database";
+                  res.status(400).json(errors);
+                });
+            }
+          })
+          .catch(error => {
+            errors.db = "Error connecting to database.";
+            res.status(400).json(errors);
+          });
+      } else {
+        errors.profile = "User already has a profile";
+        return res.status(400).json(errors);
+      }
+    })
+    .catch(error => {
+      errors.db = "Could not query database.";
+      res.status(400).json(errors);
+    });
 };
 
 exports.editProfile = (req, res) => {
