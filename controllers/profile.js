@@ -4,9 +4,14 @@ const mongoose = require("mongoose");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 
+// Import Validation
+const validateProfileCreate = require("../validation/profileCreate");
+const validateProfileUpdate = require("../validation/profileUpdate");
+
 exports.getProfile = (req, res) => {
   let errors = {};
   Profile.findOne({ user: req.user.id })
+    .populate("users", ["name", "avatar"])
     .then(profile => {
       if (!profile) {
         errors.noProfile = "There is no profile for this user";
@@ -17,8 +22,13 @@ exports.getProfile = (req, res) => {
     .catch(error => res.status(404).json({ error }));
 };
 
-exports.postProfile = (req, res) => {
-  const errors = {};
+exports.createProfile = (req, res) => {
+  const { errors, isValid } = validateProfileCreate(req.body);
+  // Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // Pull data from Fields
   let profileFields = ({
     handle,
@@ -38,7 +48,7 @@ exports.postProfile = (req, res) => {
   //   Split interests into array
   profileFields.interests =
     typeof profileFields.interests !== undefined
-      ? profileFields.interests.split("")
+      ? profileFields.interests.split(",")
       : null;
 
   //   Social Links
@@ -72,10 +82,16 @@ exports.postProfile = (req, res) => {
   });
 };
 
-exports.putProfile = (req, res) => {
-  const errors = {};
+exports.editProfile = (req, res) => {
+  const { errors, isValid } = validateProfileUpdate(req.body);
+  // Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // Pull data from fields
   const { user } = req.user.id;
+
   let profileFields = ({
     handle,
     occupation,
@@ -92,7 +108,7 @@ exports.putProfile = (req, res) => {
   } = req.body);
   //   Split interests into array
   profileFields.interests =
-    typeof interests !== undefined ? interests.split("") : null;
+    typeof interests !== undefined ? interests.split(",") : null;
 
   //   Social Links
   profileFields.social = {

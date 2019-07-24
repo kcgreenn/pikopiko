@@ -4,8 +4,8 @@ const passport = require("passport");
 
 const {
   getProfile,
-  postProfile,
-  putProfile
+  createProfile,
+  editProfile
 } = require("../../controllers/profile");
 
 // @route   GET api/profile/test
@@ -23,11 +23,15 @@ router.get("/", passport.authenticate("jwt", { session: false }), getProfile);
 // @route   POST api/profile
 // @desc    Create user's profile
 // @access  Private
-router.post("/", passport.authenticate("jwt", { session: false }), postProfile);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  createProfile
+);
 
 // @route   PUT api/profile
 // @desc    Edit user's profile
 // @access  Private
-router.put("/", passport.authenticate("jwt", { session: false }), putProfile);
+router.put("/", passport.authenticate("jwt", { session: false }), editProfile);
 
 module.exports = router;
