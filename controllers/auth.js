@@ -22,9 +22,8 @@ exports.registerUser = (req, res, next) => {
   User.findOne({ email: email }).then(user => {
     if (user) {
       //   Return error if email is already registered
-      return res
-        .status(400)
-        .json({ error: "Email is already in registered on this site" });
+      errors.email = "Email is already registered on this site";
+      return res.status(400).json(errors.email);
     } else {
       //   otherwise create a new user
       //   Generate gravatar avatar
