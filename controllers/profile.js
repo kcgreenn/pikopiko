@@ -1,8 +1,5 @@
-const mongoose = require("mongoose");
-
 // Import models
 const Profile = require("../models/Profile");
-const User = require("../models/User");
 
 // Import Validation
 const validateProfileCreate = require("../validation/profileCreate");

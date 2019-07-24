@@ -11,6 +11,9 @@ const {
   editProfile
 } = require("../../controllers/profile");
 
+const { addExperience } = require("../../controllers/experience");
+const { addEducation } = require("../../controllers/education");
+
 // @route   GET api/profile/test
 // @desc    Tests Profile route
 // @access  Public
@@ -51,5 +54,23 @@ router.post(
 // @desc    Edit user's profile
 // @access  Private
 router.put("/", passport.authenticate("jwt", { session: false }), editProfile);
+
+// @route POST api/profile/experience
+// @desc  Add expreience to profile
+// @access  Private
+router.post(
+  "/experience",
+  passport.authenticate("jwt", { session: false }),
+  addExperience
+);
+
+// @route POST api/profile/education
+// @desc  Add education to profile
+// @access  Private
+router.post(
+  "/education",
+  passport.authenticate("jwt", { session: false }),
+  addEducation
+);
 
 module.exports = router;
