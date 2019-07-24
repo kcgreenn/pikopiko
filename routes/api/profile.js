@@ -3,6 +3,9 @@ const router = express.Router();
 const passport = require("passport");
 
 const {
+  getAllProfiles,
+  getProfileByUserId,
+  getProfileByHandle,
   getProfile,
   createProfile,
   editProfile
@@ -14,6 +17,21 @@ const {
 router.get("/test", (req, res) => {
   res.send({ message: "Profile Works" });
 });
+
+// @route   GET api/profile/all
+// @desc    Get all profiles
+// @access  Public
+router.get("/all", getAllProfiles);
+
+// @route   GET api/profile/user/:userId
+// @desc    Get user profile by userId
+// @access  Public
+router.get("/user/:userId", getProfileByUserId);
+
+// @route   GET api/profile/handle/:handle
+// @desc    Get user profile by handle
+// @access  Public
+router.get("/handle/:handle", getProfileByHandle);
 
 // @route   GET api/profile
 // @desc    Returns profile of current user

@@ -8,9 +8,57 @@ const User = require("../models/User");
 const validateProfileCreate = require("../validation/profileCreate");
 const validateProfileUpdate = require("../validation/profileUpdate");
 
+exports.getAllProfiles = (req, res) => {
+  const errors = {};
+  Profile.find()
+    .populate('userId, ["name","avatar"]')
+    .then(profiles => {
+      if (!profiles) {
+        errors.profile = "There are no profiles";
+        return res.status(404).json(errors);
+      } else {
+        res.json(profiles);
+      }
+    })
+    .catch(error => {
+      errors.profile = "There are no profiles";
+      res.status(404).json(errors);
+    });
+};
+
+exports.getProfileByHandle = (req, res) => {
+  const errors = {};
+  Profile.findOne({ handle: req.params.handle })
+    .populate("userId", ["name", "avatar"])
+    .then(profile => {
+      if (profile) {
+        res.json(profile);
+      }
+    })
+    .catch(error => {
+      errors.profile = "There is no profile for this user";
+      res.status(404).json(errors);
+    });
+};
+
+exports.getProfileByUserId = (req, res) => {
+  const errors = {};
+  Profile.findOne({ userId: req.params.userId })
+    .populate("userId", ["name", "avatar"])
+    .then(profile => {
+      if (profile) {
+        res.json(profile);
+      }
+    })
+    .catch(error => {
+      errors.db = "There is no profile for this user";
+      res.status(404).json(errors);
+    });
+};
+
 exports.getProfile = (req, res) => {
   let errors = {};
-  Profile.findOne({ user: req.user.id })
+  Profile.findOne({ userId: req.user.id })
     .populate("users", ["name", "avatar"])
     .then(profile => {
       if (!profile) {
@@ -101,7 +149,6 @@ exports.editProfile = (req, res) => {
   }
 
   // Pull data from fields
-  const { user } = req.user.id;
 
   let profileFields = ({
     handle,
@@ -119,7 +166,7 @@ exports.editProfile = (req, res) => {
   } = req.body);
   //   Split interests into array
   profileFields.interests =
-    typeof interests !== undefined ? interests.split(",") : null;
+    typeof interests !== "undefined" ? interests.split(",") : null;
 
   //   Social Links
   profileFields.social = {
@@ -127,13 +174,15 @@ exports.editProfile = (req, res) => {
     instagram,
     linkedin
   };
-  Profile.findOne({ user }).then(profile => {
-    if (profile) {
-      Profile.findOneAndUpdate({ user }, { $set: profileFields }, { new: true })
-        .then(profile => res.json(profile))
-        .catch(error =>
-          res.status(404).json({ error: "Could not update profile" })
-        );
-    }
-  });
+  // If profile exists, update it with altered data fields
+  Profile.findOneAndUpdate(
+    { userId: req.user.id },
+    { $set: profileFields },
+    { new: true }
+  )
+    .then(profile => res.json(profile))
+    .catch(error => {
+      errors.profile = "Could not find user profile";
+      res.status(404).json(errors);
+    });
 };

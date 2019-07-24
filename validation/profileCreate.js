@@ -4,13 +4,14 @@ const isEmpty = require("./isEmpty");
 module.exports = function validateProfileInput(data) {
   let errors = {};
   let { handle, status, interests, youtube, instagram, linkedin } = data;
+
   // Ensure all values are strings for Validator
   handle = !isEmpty(handle) ? handle : "";
   status = !isEmpty(status) ? status : "";
   interests = !isEmpty(interests) ? interests : "";
 
-  if (!Validator.isLength(handle, { min: 2, max: 40 })) {
-    errors.handle = "Handle must be between 2 and 40 characters in length";
+  if (!Validator.isLength(handle, { min: 2, max: 32 })) {
+    errors.handle = "Handle must be between 2 and 32 characters in length";
   }
   //   Validate required fields are given
   if (Validator.isEmpty(handle)) {
