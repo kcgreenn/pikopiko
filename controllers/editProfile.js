@@ -125,9 +125,10 @@ exports.editProfile = (req, res) => {
 
 exports.deleteProfile = (req, res) => {
   const errors = {};
-
+  // Find Profile and delete it
   Profile.findOneAndRemove({ userId: req.user.id })
     .then(() => {
+      // Find user and delete it
       User.findOneAndRemove({ _id: req.user.id })
         .then(() => res.json({ success: true }))
         .catch(error => {
