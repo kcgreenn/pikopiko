@@ -43,11 +43,14 @@ exports.deleteComment = (req, res) => {
       ) {
         errors.comment = "Comment not found";
         res.status(404).json(errors);
+      } else if (post.comments.userId !== req.user.id) {
+        errors.user = "Not authorizes to delete that comment";
+        res.status(401).json(errors);
       }
       //   Get remove index
       const removeIndex = post.comments
         .map(item => item._id.toString())
-        .indexOf(res.params.comment_id);
+        .indexOf(req.params.comment_id);
       //   Splice comment from array
       post.comments.splice(removeIndex, 1);
       // Save post to db
