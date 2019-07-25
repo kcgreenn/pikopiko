@@ -9,7 +9,8 @@ const {
   getAllPosts,
   getPostById,
   createPost,
-  deletePost
+  deletePost,
+  likePost
 } = require("../../controllers/posts");
 
 // @route   Get api/posts/test
@@ -41,6 +42,15 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   deletePost
+);
+
+// @route   POST api/posts/like/:id
+// @desc    Like or unlike a post
+// @access  Private
+router.post(
+  "/like/:id",
+  passport.authenticate("jwt", { session: false }),
+  likePost
 );
 
 module.exports = router;

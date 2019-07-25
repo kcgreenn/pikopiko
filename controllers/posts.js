@@ -80,3 +80,41 @@ exports.deletePost = (req, res) => {
       res.status(400).json(errors);
     });
 };
+
+// Like or Unlike a Post with the given Id
+exports.likePost = (req, res) => {
+  const errors = {};
+  // Find post and like or dislike
+  Post.findById(req.params.id)
+    .then(post => {
+      if (
+        post.likes.filter(like => like._id.toString() === req.user.id).length >
+        0
+      ) {
+        //   If user has already liked this post, remove them from like array
+        const unlikeIndex = post.likes.indexOf({ userId: req.user.id });
+        post.likes.splice(unlikeIndex, 1);
+        post
+          .save()
+          .then(post => res.json(post))
+          .catch(error => {
+            errors.post = "Could not unlike post";
+            res.status(400).json(errors);
+          });
+      } else {
+        //   Else add userId to like array
+        post.likes.push(req.user.id);
+        post
+          .save()
+          .then(post => res.json(post))
+          .catch(error => {
+            errors.post = "Could not like post";
+            res.status(400).json(errors);
+          });
+      }
+    })
+    .catch(error => {
+      errors.post = "Could not like post";
+      res.status(400).json(errors);
+    });
+};
