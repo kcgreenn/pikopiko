@@ -5,7 +5,11 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 
 // import controllers
-const { createPost } = require("../../controllers/posts");
+const {
+  getAllPosts,
+  getPostById,
+  createPost
+} = require("../../controllers/posts");
 
 // @route   Get api/posts/test
 // @desc    Tests Posts route
@@ -13,6 +17,16 @@ const { createPost } = require("../../controllers/posts");
 router.get("/test", (req, res) => {
   res.send({ message: "Posts Works" });
 });
+
+// @route   GET api/posts/
+// @desc    Return all posts
+// @access  Public
+router.get("/", getAllPosts);
+
+// @route   GET api/posts/:id
+// @desc    Return Post with given Id
+// @access  Public
+router.get("/:id", getPostById);
 
 // @route   POST api/posts/
 // @desc    Create a new post
