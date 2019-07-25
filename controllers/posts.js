@@ -1,5 +1,6 @@
 // import Post model
 const Post = require("../models/Post");
+const Profile = require("../models/Profile");
 
 // import post validation
 const validatePostInput = require("../validation/post");
@@ -39,7 +40,9 @@ exports.createPost = (req, res) => {
   }
 
   //   Destructure data from req.body
-  const { text, name, avatar, userId } = req.body;
+  const { text, name, avatar } = req.body;
+  console.log("userID " + req.user.id);
+  const userId = req.user.id;
   //   Create new post
   const newPost = new Post({ text, name, avatar, userId });
   // Save post to db
@@ -48,6 +51,32 @@ exports.createPost = (req, res) => {
     .then(post => res.json(post))
     .catch(error => {
       errors.post = "Could not create post";
+      res.status(400).json(errors);
+    });
+};
+
+// Delete a Post with the given Id
+exports.deletePost = (req, res) => {
+  const errors = {};
+  // Find post and delete it
+  Post.findById(req.params.id)
+    .then(post => {
+      // Check if Post Owner is Making Delete  Request
+      if (post.userId.toString() !== req.user.id) {
+        errors.post = "Not authorized to delete this post";
+        res.status(401).json(errors);
+      } else {
+        post
+          .remove()
+          .then(() => res.json({ success: true }))
+          .catch(error => {
+            errors.post = "Could not delete post";
+            res.status(404).json(errors);
+          });
+      }
+    })
+    .catch(error => {
+      errors.post = "Could not delete post";
       res.status(400).json(errors);
     });
 };

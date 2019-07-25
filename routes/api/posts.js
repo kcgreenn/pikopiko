@@ -8,7 +8,8 @@ const passport = require("passport");
 const {
   getAllPosts,
   getPostById,
-  createPost
+  createPost,
+  deletePost
 } = require("../../controllers/posts");
 
 // @route   Get api/posts/test
@@ -32,5 +33,14 @@ router.get("/:id", getPostById);
 // @desc    Create a new post
 // @access  Private
 router.post("/", passport.authenticate("jwt", { session: false }), createPost);
+
+// @route   Delete api/posts/:id
+// @desc    Delete a Post with given Id
+// @access  Private
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  deletePost
+);
 
 module.exports = router;
