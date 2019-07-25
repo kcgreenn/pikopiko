@@ -13,6 +13,11 @@ const {
   likePost
 } = require("../../controllers/posts");
 
+const {
+  addCommenttoPost,
+  deleteComment
+} = require("../../controllers/comments");
+
 // @route   Get api/posts/test
 // @desc    Tests Posts route
 // @access  Public
@@ -45,12 +50,30 @@ router.delete(
 );
 
 // @route   POST api/posts/like/:id
-// @desc    Like or unlike a post
+// @desc    Like or unlike a post of given id
 // @access  Private
 router.post(
   "/like/:id",
   passport.authenticate("jwt", { session: false }),
   likePost
+);
+
+// @route   POST api/posts/comment/:id
+// @desc    Add a comment to a post of given id
+// @access  Private
+router.post(
+  "/comment/:id",
+  passport.authenticate("jwt", { session: false }),
+  addCommenttoPost
+);
+
+// @route   DELETE api/posts/comment/:id
+// @desc    Delete a comment of given id
+// @access  Private
+router.delete(
+  "/comment/:id/:comment_id",
+  passport.authenticate("jwt", { session: false }),
+  deleteComment
 );
 
 module.exports = router;
