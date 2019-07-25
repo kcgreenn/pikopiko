@@ -4,15 +4,24 @@ const passport = require("passport");
 
 const {
   getAllProfiles,
-  getProfileByUserId,
-  getProfileByHandle,
   getProfile,
+  getProfileByHandle,
+  getProfileByUserId
+} = require("../../controllers/getProfile");
+const {
   createProfile,
-  editProfile
-} = require("../../controllers/profile");
+  editProfile,
+  deleteProfile
+} = require("../../controllers/editProfile");
 
-const { addExperience } = require("../../controllers/experience");
-const { addEducation } = require("../../controllers/education");
+const {
+  addExperience,
+  deleteExperience
+} = require("../../controllers/experience");
+const {
+  addEducation,
+  deleteEducation
+} = require("../../controllers/education");
 
 // @route   GET api/profile/test
 // @desc    Tests Profile route
@@ -71,6 +80,33 @@ router.post(
   "/education",
   passport.authenticate("jwt", { session: false }),
   addEducation
+);
+
+// @route DELETE api/profile/experience/:expId
+// @desc  Delete experience
+// @access  Private
+router.delete(
+  "/experience/:exp_id",
+  passport.authenticate("jwt", { session: false }),
+  deleteExperience
+);
+
+// @route DELETE api/profile/education/:eduId
+// @desc  Delete education
+// @access  Private
+router.delete(
+  "/education/:edu_id",
+  passport.authenticate("jwt", { session: false }),
+  deleteEducation
+);
+
+// @route DELETE api/profile/
+// @desc  Delete user and profile
+// @access  Private
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  deleteProfile
 );
 
 module.exports = router;

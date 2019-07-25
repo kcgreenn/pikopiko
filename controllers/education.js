@@ -38,3 +38,30 @@ exports.addEducation = (req, res) => {
       res.status(400).json(errors);
     });
 };
+
+exports.deleteEducation = (req, res) => {
+  const errors = {};
+  Profile.findOne({ userId: req.user.id })
+    .then(profile => {
+      // Get remove index
+      const removeIndex = profile.education
+        .map(item => item.id)
+        .indexOf(req.params.edu_id);
+      // Splice index from exp array
+      profile.education.splice(removeIndex, 1);
+      // Save
+      profile
+        .save()
+        .then(profile => {
+          res.json(profile);
+        })
+        .catch(error => {
+          errors.profile = "Could not delete education";
+          res.status(404).json(errors);
+        });
+    })
+    .catch(error => {
+      errors.profile = "Could not delete education";
+      res.status(400).json(errors);
+    });
+};

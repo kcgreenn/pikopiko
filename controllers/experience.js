@@ -38,3 +38,29 @@ exports.addExperience = (req, res) => {
       res.status(400).json(errors);
     });
 };
+
+exports.deleteExperience = (req, res) => {
+  const errors = {};
+  Profile.findOne({ userId: req.user.id })
+    .then(profile => {
+      // Get remove index
+      const removeIndex = profile.experience
+        .map(item => item.id)
+        .indexOf(req.params.exp_id);
+
+      // Splice index from exp array
+      profile.experience.splice(removeIndex, 1);
+      // Save
+      profile
+        .save()
+        .then(profile => res.json(profile))
+        .catch(error => {
+          errors.profile = "Could not delete experience";
+          res.status(404).json(errors);
+        });
+    })
+    .catch(error => {
+      errors.profile = "Could not delete experience";
+      res.status(400).json(errors);
+    });
+};
