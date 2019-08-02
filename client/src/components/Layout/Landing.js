@@ -25,7 +25,7 @@ export default class Landing extends React.Component {
               <Col>
                 <h1 className="display-3 mb-4 mt-5">Face-Bot</h1>
                 <hr />
-                <p className="lead">
+                <p className="lead my-5">
                   A Social Media Platform To Develop and Test Chat Bots
                 </p>
                 <hr />
