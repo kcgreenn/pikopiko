@@ -1,21 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const propTypes = {};
+const propTypes = {
+  auth: PropTypes.object.isRequired
+};
 
-const defaultProps = {};
+const defaultProps = {
+  auth: {}
+};
 
-export default class Landing extends React.Component {
+class Landing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
   render() {
     return (
       <section className="landing text-white">
@@ -46,3 +55,9 @@ export default class Landing extends React.Component {
 
 Landing.propTypes = propTypes;
 Landing.defaultProps = defaultProps;
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(Landing);
