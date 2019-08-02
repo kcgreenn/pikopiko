@@ -1,17 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
+import { withRouter } from "react-router-dom";
 
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-const propTypes = {};
+const propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
 const defaultProps = {};
 
-export default class Register extends React.Component {
+class Register extends React.Component {
   state = {
     name: "",
     email: "",
@@ -19,6 +25,11 @@ export default class Register extends React.Component {
     password2: "",
     errors: {}
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
   inputChangeHandler = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -29,22 +40,15 @@ export default class Register extends React.Component {
     // Collect form data to register user
     const { name, email, password, password2 } = this.state;
     const newUser = { name, email, password, password2 };
-    axios
-      .post("/api/users/register", newUser)
-      .then(res => console.log(res.data))
-      .catch(error => {
-        this.setState({
-          errors: error.response.data
-        });
-      });
+    this.props.registerUser(newUser, this.props.history);
   };
   render() {
     const { errors } = this.state;
     return (
-      <React.Fragment className="main">
+      <React.Fragment>
         <h1 className="display-4 mt-5 text-center">Sign Up</h1>
         <p className="lead text-center">Create your Face-Bot Account</p>
-        <Form onSubmit={this.submitHandler} className="my-5">
+        <Form onSubmit={this.submitHandler} className="my-5 main">
           <Form.Row>
             <Form.Group as={Col} md={6} controlId="name">
               <Form.Label>BotName</Form.Label>
@@ -126,5 +130,15 @@ export default class Register extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
 Register.propTypes = propTypes;
 Register.defaultProps = defaultProps;
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));

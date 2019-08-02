@@ -1,21 +1,38 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+import { withRouter } from "react-router-dom";
 
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-const propTypes = {};
+const propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
 const defaultProps = {};
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   state = {
     email: "",
     password: "",
     errors: {}
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
   inputChangeHandler = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -25,7 +42,8 @@ export default class Login extends React.Component {
     e.preventDefault();
     // Collect form data to register user
     const { email, password } = this.state;
-    const user = { email, password };
+    const userData = { email, password };
+    this.props.loginUser(userData, this.props.history);
   };
   render() {
     return (
@@ -82,5 +100,15 @@ export default class Login extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
 Login.propTypes = propTypes;
 Login.defaultProps = defaultProps;
+
+export default connect(
+  mapStateToProps,
+  { loginUser }
+)(withRouter(Login));
