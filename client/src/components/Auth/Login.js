@@ -42,7 +42,12 @@ export default class Login extends React.Component {
                   onChange={this.inputChangeHandler}
                   value={this.state.email}
                   type="email"
+                  invalid={this.state.errors.email}
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  <p>{this.state.errors.email}</p>
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col>
@@ -53,7 +58,12 @@ export default class Login extends React.Component {
                   onChange={this.inputChangeHandler}
                   value={this.state.password}
                   type="password"
+                  invalid={this.state.errors.password}
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {this.state.errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>

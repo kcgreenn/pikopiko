@@ -3,6 +3,7 @@ img {
 }
 body {
   min-height: 100vh;
+  height: auto;
 }
 
 .landing {
@@ -37,7 +38,11 @@ body {
   color: #bbb !important;
 }
 .footer {
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100vw;
+}
+.main {
+  min-height: 100vh;
 }

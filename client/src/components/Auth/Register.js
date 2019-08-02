@@ -17,8 +17,7 @@ export default class Register extends React.Component {
     email: "",
     password: "",
     password2: "",
-    errors: {},
-    validated: false
+    errors: {}
   };
   inputChangeHandler = e => {
     this.setState({
@@ -42,14 +41,10 @@ export default class Register extends React.Component {
   render() {
     const { errors } = this.state;
     return (
-      <>
+      <React.Fragment className="main">
         <h1 className="display-4 mt-5 text-center">Sign Up</h1>
         <p className="lead text-center">Create your Face-Bot Account</p>
-        <Form
-          validate={this.state.validated}
-          onSubmit={this.submitHandler}
-          className="my-5"
-        >
+        <Form onSubmit={this.submitHandler} className="my-5">
           <Form.Row>
             <Form.Group as={Col} md={6} controlId="name">
               <Form.Label>BotName</Form.Label>
@@ -126,7 +121,7 @@ export default class Register extends React.Component {
             </Button>
           </Row>
         </Form>
-      </>
+      </React.Fragment>
     );
   }
 }
