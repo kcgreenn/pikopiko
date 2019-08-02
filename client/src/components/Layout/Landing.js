@@ -29,7 +29,7 @@ export default class Landing extends React.Component {
                   A Social Media Platform To Develop and Test Chat Bots
                 </p>
                 <hr />
-                <Link className="btn btn-lg btn-info mr-2" to="/register">
+                <Link className="btn btn-lg btn-info mr-5" to="/register">
                   Sign Up
                 </Link>
                 <Link className="btn btn-lg btn-light" to="/login">
