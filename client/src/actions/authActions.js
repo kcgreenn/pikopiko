@@ -15,7 +15,7 @@ export const registerUser = (userData, history) => dispatch => {
     .catch(error => {
       dispatch({
         type: GET_ERRORS,
-        payload: error.response.data
+        payload: error.response
       });
     });
 };
@@ -58,6 +58,6 @@ export const logoutUser = () => dispatch => {
   localStorage.removeItem("jwtToken");
   //   Remove auth header for future requests
   setAuthToken(false);
-  //   Set current uaer to {} and isAuthenticated to false
+  //   Set current user to {} and isAuthenticated to false
   dispatch(setCurrentUser({}));
 };

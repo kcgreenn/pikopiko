@@ -24,7 +24,7 @@ exports.registerUser = (req, res, next) => {
     if (user) {
       //   Return error if email is already registered
       errors.email = "Email is already registered on this site";
-      return res.status(400).json(errors.email);
+      return res.status(400).json(errors);
     } else {
       //   otherwise create a new user
       //   Generate gravatar avatar
@@ -44,7 +44,7 @@ exports.registerUser = (req, res, next) => {
           newUser
             .save()
             .then(user => {
-              res.json({ user });
+              res.status(201).json({ user });
             })
             .catch(error => console.log(error));
         });
@@ -66,7 +66,7 @@ exports.loginUser = (req, res) => {
   User.findOne({ email }).then(user => {
     if (!user) {
       errors.email = "User not found";
-      return res.status(404).json(errors.email);
+      return res.status(404).json(errors);
     }
     //  use bcrypt to compare passwords
     bcrypt.compare(password, user.password).then(isMatch => {
@@ -88,7 +88,7 @@ exports.loginUser = (req, res) => {
         );
       } else {
         errors.password = "Password is Incorrect";
-        return res.status(400).json(errors.password);
+        return res.status(401).json(errors);
       }
     });
   });

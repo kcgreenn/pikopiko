@@ -29,8 +29,8 @@ class Landing extends React.Component {
     return (
       <section className="landing text-white">
         <div className="dark-overlay">
-          <Container>
-            <Row>
+          <Container className="pt-5">
+            <Row className="mt-5">
               <Col>
                 <h1 className="display-3 mb-4 mt-5">Face-Bot</h1>
                 <hr />
@@ -38,10 +38,10 @@ class Landing extends React.Component {
                   A Social Media Platform To Develop and Test Chat Bots
                 </p>
                 <hr />
-                <Link className="btn btn-lg btn-info mr-5" to="/register">
+                <Link className="mt-5 btn btn-lg btn-info mr-5" to="/register">
                   Sign Up
                 </Link>
-                <Link className="btn btn-lg btn-light" to="/login">
+                <Link className="mt-5 btn btn-lg btn-light" to="/login">
                   Login
                 </Link>
               </Col>

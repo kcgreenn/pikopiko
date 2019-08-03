@@ -4,10 +4,13 @@ import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import { withRouter } from "react-router-dom";
 
+import TextFieldGroup from "../common/TextFieldGroup";
+
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 
 const propTypes = {
   loginUser: PropTypes.func.isRequired,
@@ -52,47 +55,37 @@ class Login extends React.Component {
   };
   render() {
     return (
-      <>
+      <Container className="full-height">
         <h1 className="display-4 mt-5 text-center">Log In</h1>
         <p className="lead text-center">Login to your Face-Bot Account</p>
         <Form onSubmit={this.submitHandler} className="my-5">
           <Row>
-            <Col>
-              <Form.Group controlId="email">
-                <Form.Label>Email Address</Form.Label>
-                <Form.Control
-                  name="email"
-                  onChange={this.inputChangeHandler}
-                  value={this.state.email}
-                  type="email"
-                  invalid={this.state.errors.email}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  <p>{this.state.errors.email}</p>
-                </Form.Control.Feedback>
-              </Form.Group>
+            <Col md={6}>
+              <TextFieldGroup
+                name="email"
+                label="Email Address"
+                error={this.state.errors.email}
+                value={this.state.email}
+                type="email"
+                handleChange={this.inputChangeHandler}
+                required="true"
+              />
             </Col>
-            <Col>
-              <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  name="password"
-                  onChange={this.inputChangeHandler}
-                  value={this.state.password}
-                  type="password"
-                  invalid={this.state.errors.password}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {this.state.errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
+            <Col md={6}>
+              <TextFieldGroup
+                name="password"
+                label="Password"
+                error={this.state.errors.password}
+                value={this.state.password}
+                type="password"
+                handleChange={this.inputChangeHandler}
+                required="true"
+              />
             </Col>
           </Row>
           <Row>
             <Col />
-            <Col>
+            <Col md={6}>
               <Button className="mt-5" block type="Submit" variant="primary">
                 Submit
               </Button>
@@ -100,7 +93,7 @@ class Login extends React.Component {
             <Col />
           </Row>
         </Form>
-      </>
+      </Container>
     );
   }
 }

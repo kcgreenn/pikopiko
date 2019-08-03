@@ -4,10 +4,13 @@ import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import { withRouter } from "react-router-dom";
 
+import TextFieldGroup from "../common/TextFieldGroup";
+
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 
 const propTypes = {
   registerUser: PropTypes.func.isRequired,
@@ -50,87 +53,72 @@ class Register extends React.Component {
   render() {
     const { errors } = this.state;
     return (
-      <React.Fragment>
+      <Container className="full-height">
         <h1 className="display-4 mt-5 text-center">Sign Up</h1>
         <p className="lead text-center">Create your Face-Bot Account</p>
         <Form onSubmit={this.submitHandler} className="my-5 main">
           <Form.Row>
-            <Form.Group as={Col} md={6} controlId="name">
-              <Form.Label>BotName</Form.Label>
-              <Form.Control
-                required
+            <Col md={6}>
+              <TextFieldGroup
                 name="name"
+                label="BotName"
+                error={errors.name}
                 value={this.state.name}
-                onChange={this.inputChangeHandler}
                 type="text"
-                isInvalid={errors.name}
-                minLength="4"
-                maxLength="32"
+                handleChange={this.inputChangeHandler}
+                required="true"
               />
-              <Form.Control.Feedback type="invalid">
-                <p>{errors.name}</p>
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md={6} controlId="email">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                required
+            </Col>
+            <Col md={6}>
+              <TextFieldGroup
                 name="email"
-                onChange={this.inputChangeHandler}
+                label="Email Address"
+                error={errors.email}
                 value={this.state.email}
+                info="We will never share your email with anyone"
                 type="email"
-                isInvalid={errors.email}
+                handleChange={this.inputChangeHandler}
+                required="true"
               />
-              <Form.Text className="text-muted">
-                We will never share your email with anyone
-              </Form.Text>
-              <Form.Control.Feedback type="invalid">
-                <p>{errors.email}</p>
-              </Form.Control.Feedback>
-            </Form.Group>
+            </Col>
           </Form.Row>
           <Form.Row>
-            <Form.Group as={Col} md={6} controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                required
+            <Col md={6}>
+              <TextFieldGroup
                 name="password"
-                onChange={this.inputChangeHandler}
+                label="Password"
+                error={errors.password}
                 value={this.state.password}
                 type="password"
-                isInvalid={errors.password}
-                minLength="6"
-                maxLength="32"
+                handleChange={this.inputChangeHandler}
+                required="true"
               />
-              <Form.Control.Feedback type="invalid">
-                <p>{errors.password}</p>
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md={6} controlId="password2">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                required
+            </Col>
+            <Col md={6}>
+              <TextFieldGroup
                 name="password2"
-                onChange={this.inputChangeHandler}
+                label="Confirm Password"
+                error={errors.password2}
                 value={this.state.password2}
                 type="password"
-                isInvalid={errors.password2}
-                minLength="6"
-                maxLength="32"
+                handleChange={this.inputChangeHandler}
+                required="true"
               />
-              <Form.Control.Feedback type="invalid">
-                <p>{errors.password2}</p>
-              </Form.Control.Feedback>
-            </Form.Group>
+            </Col>
           </Form.Row>
 
           <Row>
-            <Button className="mt-5" block type="Submit" variant="primary">
-              Submit
-            </Button>
+            <Col />
+            <Col md={6}>
+              <Button className="my-5" type="Submit" variant="primary" block>
+                Submit
+              </Button>
+            </Col>
+
+            <Col />
           </Row>
         </Form>
-      </React.Fragment>
+      </Container>
     );
   }
 }

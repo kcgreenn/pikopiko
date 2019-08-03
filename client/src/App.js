@@ -1,18 +1,22 @@
 import React from "react";
 
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { clearCurrentProfile } from "./actions/profileActions";
+
+import PrivateRoute from "./components/common/PrivateRoute";
 
 import "./App.css";
 
-import Container from "react-bootstrap/Container";
 import Header from "./components/Layout/Header";
 import Landing from "./components/Layout/Landing";
 import Footer from "./components/Layout/Footer";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
+import Dashboard from "./components/Dashboard//Dashboard";
+import CreateProfile from "./components/create-profile/CreateProfile";
 
 // Redux Configuration
 import { Provider } from "react-redux";
@@ -31,7 +35,8 @@ if (localStorage.jwtToken) {
   if (decoded.exp < currentTime) {
     // Logout User
     store.dispatch(logoutUser());
-    // TODO: Clear current profile
+    //  Clear current profile
+    store.dispatch(clearCurrentProfile());
     // Redirect to Login
     window.location.href = "/login";
   }
@@ -43,10 +48,18 @@ function App() {
       <Router>
         <Header />
         <Route path="/" component={Landing} exact />
-        <Container>
-          <Route path="/login" component={Login} exact />
-          <Route path="/register" component={Register} exact />
-        </Container>
+        <Route path="/login" component={Login} exact />
+        <Route path="/register" component={Register} exact />
+        <Switch>
+          <PrivateRoute path="/dashboard" component={Dashboard} exact />
+        </Switch>
+        <Switch>
+          <PrivateRoute
+            path="/create-profile"
+            component={CreateProfile}
+            exact
+          />
+        </Switch>
         <Footer />
       </Router>
     </Provider>
