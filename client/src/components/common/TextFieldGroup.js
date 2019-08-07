@@ -14,13 +14,13 @@ const propTypes = {
   type: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   required: PropTypes.string,
-  disabled: PropTypes.string
+  disabled: PropTypes.bool
 };
 
 const defaultProps = {
   type: "text",
   value: "",
-  disabled: "false"
+  disabled: false
 };
 
 const TextFieldGroup = ({
@@ -54,7 +54,7 @@ const TextFieldGroup = ({
           type={type}
           isInvalid={error}
           required={required ? true : false}
-          diabled={disabled}
+          disabled={disabled}
         />
         {info && (
           <Form.Text className="col-md-12 d-block text-muted">{info}</Form.Text>

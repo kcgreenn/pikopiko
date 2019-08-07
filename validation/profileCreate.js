@@ -3,12 +3,12 @@ const isEmpty = require("./isEmpty");
 
 module.exports = function validateProfileInput(data) {
   let errors = {};
-  let { handle, status, interests, youtube, instagram, linkedin } = data;
+  let { handle, status, skills, youtube, instagram, linkedin } = data;
 
   // Ensure all values are strings for Validator
   handle = !isEmpty(handle) ? handle : "";
   status = !isEmpty(status) ? status : "";
-  interests = !isEmpty(interests) ? interests : "";
+  skills = !isEmpty(skills) ? skills : "";
 
   if (!Validator.isLength(handle, { min: 2, max: 32 })) {
     errors.handle = "Handle must be between 2 and 32 characters in length";
@@ -20,8 +20,8 @@ module.exports = function validateProfileInput(data) {
   if (Validator.isEmpty(status)) {
     errors.Status = "Status is required";
   }
-  if (Validator.isEmpty(interests)) {
-    errors.interests = "Interests is required";
+  if (Validator.isEmpty(skills)) {
+    errors.skills = "Skills is required";
   }
   //   If social links are given, validate they are URLs
   if (!isEmpty(youtube)) {

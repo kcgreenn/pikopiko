@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import isEmpty from "../../validation/is-empty";
 
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaGroup from "../common/TextAreaGroup";
@@ -14,16 +15,18 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Accordion from "react-bootstrap/Accordion";
 
-import { createProfile } from "../../actions/profileActions";
+import { getCurrentProfile, editProfile } from "../../actions/profileActions";
 
 const propTypes = {
   profile: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  editProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired
 };
 
 const defaultProps = {};
 
-class CreateProfile extends React.Component {
+class EditProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,9 +46,57 @@ class CreateProfile extends React.Component {
       errors: {}
     };
   }
+  componentDidMount() {
+    this.props.getCurrentProfile();
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
+    }
+    if (nextProps.profile.profile) {
+      const profile = nextProps.profile.profile.profile;
+      //   Return skills array to  csv
+      const skillsCsv = profile.skills.join(",");
+      //   If profile field doesn't exist, make empty string
+      profile.company = !isEmpty(profile.company) ? profile.company : "";
+      profile.website = !isEmpty(profile.website) ? profile.website : "";
+      profile.location = !isEmpty(profile.company) ? profile.company : "";
+      profile.githubusername = !isEmpty(profile.githubusername)
+        ? profile.githubusername
+        : "";
+      profile.social = !isEmpty(profile.social) ? profile.social : {};
+      profile.social.twitter = !isEmpty(profile.social.twitter)
+        ? profile.social.twitter
+        : "";
+      profile.social.facebook = !isEmpty(profile.social.facebook)
+        ? profile.social.facebook
+        : "";
+      profile.social.linkedin = !isEmpty(profile.social.linkedin)
+        ? profile.social.linkedin
+        : "";
+      profile.social.youtube = !isEmpty(profile.social.youtube)
+        ? profile.social.youtube
+        : "";
+      profile.social.instagram = !isEmpty(profile.social.instagram)
+        ? profile.social.instagram
+        : "";
+
+      // Fill Fields with current values
+      this.setState({
+        handle: profile.handle,
+        company: profile.company,
+        website: profile.website,
+        location: profile.location,
+        status: profile.status,
+        skills: skillsCsv,
+        githubusername: profile.githubusername,
+        bio: profile.bio,
+        twitter: profile.social.twitter,
+        facebook: profile.social.facebook,
+        linkedin: profile.social.linkedin,
+        youtube: profile.social.youtube,
+        instagram: profile.social.instagram
+      });
     }
   }
   inputChangeHandler = e => {
@@ -71,7 +122,7 @@ class CreateProfile extends React.Component {
       youtube: this.state.youtube,
       instagram: this.state.instagram
     };
-    this.props.createProfile(profileData, this.props.history);
+    this.props.editProfile(profileData, this.props.history);
   };
   render() {
     //   Status select options
@@ -92,8 +143,7 @@ class CreateProfile extends React.Component {
     ];
     return (
       <Container className="full-height">
-        <h1 className="display-4 mt-5 text-center">Create Your Profile</h1>
-        <p className="lead text-center">Tell us a bit about yourself</p>
+        <h1 className="display-4 mt-5 text-center">Edit Your Profile</h1>
         <small className="d-block pb-3 text-center">* = Required Fields</small>
         <Form onSubmit={this.submitHandler} className="my-5">
           <Row>
@@ -226,7 +276,7 @@ class CreateProfile extends React.Component {
             <Col />
             <Col md={8} className="m-auto">
               <Button className="mt-5" block type="Submit" variant="primary">
-                Create Profile
+                Edit Profile
               </Button>
             </Col>
             <Col />
@@ -237,8 +287,8 @@ class CreateProfile extends React.Component {
   }
 }
 
-CreateProfile.propTypes = propTypes;
-CreateProfile.defaultProps = defaultProps;
+EditProfile.propTypes = propTypes;
+EditProfile.defaultProps = defaultProps;
 
 const mapStateToProps = state => ({
   profile: state.profile,
@@ -247,5 +297,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { createProfile }
-)(withRouter(CreateProfile));
+  { getCurrentProfile, editProfile }
+)(withRouter(EditProfile));

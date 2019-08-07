@@ -35,7 +35,11 @@ const SelectGroup = ({
       >
         {options.map((option, index) => {
           return (
-            <option selected={option.selected} value={option.value} key={index}>
+            <option
+              defaultValue={option.selected}
+              value={option.value}
+              key={index}
+            >
               {option.label}
             </option>
           );

@@ -19,7 +19,7 @@ exports.createProfile = (req, res) => {
     bio,
     location,
     status,
-    interests,
+    skills,
     expreience,
     education,
     social = {},
@@ -28,10 +28,10 @@ exports.createProfile = (req, res) => {
     youtube
   } = req.body);
   profileFields.userId = req.user.id;
-  //   Split interests into array
-  profileFields.interests =
-    typeof profileFields.interests !== undefined
-      ? profileFields.interests.split(",")
+  //   Split skills into array
+  profileFields.skills =
+    typeof profileFields.skills !== undefined
+      ? profileFields.skills.split(",")
       : null;
 
   //   Social Links
@@ -92,7 +92,7 @@ exports.editProfile = (req, res) => {
     bio,
     location,
     status,
-    interests,
+    skills,
     expreience,
     education,
     social = {},
@@ -100,9 +100,9 @@ exports.editProfile = (req, res) => {
     linkedin,
     youtube
   } = req.body);
-  //   Split interests into array
-  profileFields.interests =
-    typeof interests !== "undefined" ? interests.split(",") : null;
+  //   Split skills into array
+  profileFields.skills =
+    typeof skills !== "undefined" ? skills.split(",") : null;
 
   //   Social Links
   profileFields.social = {

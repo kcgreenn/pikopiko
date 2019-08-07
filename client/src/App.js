@@ -17,6 +17,10 @@ import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
 import Dashboard from "./components/Dashboard//Dashboard";
 import CreateProfile from "./components/create-profile/CreateProfile";
+import EditProfile from "./components/edit-profile/EditProfile";
+import AddExperience from "./components/add-credentials/AddExperience";
+import AddEducation from "./components/add-credentials/AddEducation";
+import Profiles from "./components/profiles/Profiles";
 
 // Redux Configuration
 import { Provider } from "react-redux";
@@ -60,6 +64,20 @@ function App() {
             exact
           />
         </Switch>
+        <Switch>
+          <PrivateRoute path="/edit-profile" component={EditProfile} exact />
+        </Switch>
+        <Switch>
+          <PrivateRoute
+            path="/add-experience"
+            component={AddExperience}
+            exact
+          />
+        </Switch>
+        <Switch>
+          <PrivateRoute path="/add-education" component={AddEducation} exact />
+        </Switch>
+        <Route path="/profiles" component={Profiles} exact />
         <Footer />
       </Router>
     </Provider>

@@ -68,6 +68,9 @@ class Header extends React.Component {
             <Navbar.Brand as={Link} to="/">
               Face-Bot
             </Navbar.Brand>
+            <Nav.Link as={Link} className="text-secondary" to="/profiles">
+              Developers
+            </Nav.Link>
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               {isAuthenticated ? authLinks : guestLinks}

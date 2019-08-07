@@ -58,7 +58,7 @@ exports.getProfile = (req, res) => {
         errors.noProfile = "There is no profile for this user";
         return res.status(404).json({ errors });
       }
-      res.json({ profile });
+      res.json(profile);
     })
     .catch(error => res.status(404).json({ error }));
 };
