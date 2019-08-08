@@ -21,6 +21,8 @@ import EditProfile from "./components/edit-profile/EditProfile";
 import AddExperience from "./components/add-credentials/AddExperience";
 import AddEducation from "./components/add-credentials/AddEducation";
 import Profiles from "./components/profiles/Profiles";
+import Profile from "./components/profile/Profile";
+import NotFound from "./components/not-found/NotFound";
 
 // Redux Configuration
 import { Provider } from "react-redux";
@@ -78,6 +80,8 @@ function App() {
           <PrivateRoute path="/add-education" component={AddEducation} exact />
         </Switch>
         <Route path="/profiles" component={Profiles} exact />
+        <Route path="/profile/:handle" component={Profile} exact />
+        <Route path="/not-found" component={NotFound} exact />
         <Footer />
       </Router>
     </Provider>

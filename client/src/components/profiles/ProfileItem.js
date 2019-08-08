@@ -2,11 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import isEmpty from "../../validation/is-empty";
-
 import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 
 const propTypes = {
@@ -34,7 +30,7 @@ class ProfileItem extends React.Component {
           to={`/profile/${profile.handle}`}
         >
           <Card.Img
-            style={{ width: "10rem" }}
+            style={{ width: "7rem" }}
             className="rounded-circle m-auto"
             variant="top"
             src={

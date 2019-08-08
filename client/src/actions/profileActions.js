@@ -22,7 +22,27 @@ export const getCurrentProfile = () => dispatch => {
     })
     .catch(error => {
       dispatch({
-        //   retrun empty profile if not found
+        //   return empty profile if not found
+        type: GET_PROFILE,
+        payload: {}
+      });
+    });
+};
+
+// Get profile by handle
+export const getProfileByHandle = handle => dispatch => {
+  dispatch(setProfileLoading());
+  axios
+    .get(`/api/profile/handle/${handle}`)
+    .then(res => {
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      });
+    })
+    .catch(error => {
+      dispatch({
+        //   return empty profile if not found
         type: GET_PROFILE,
         payload: {}
       });

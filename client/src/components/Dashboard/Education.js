@@ -8,7 +8,9 @@ import Table from "react-bootstrap/Table";
 
 import { deleteEducation } from "../../actions/profileActions";
 
-const propTypes = {};
+const propTypes = {
+  education: PropTypes.array.isRequired
+};
 
 const defaultProps = {};
 
