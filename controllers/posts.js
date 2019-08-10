@@ -41,7 +41,6 @@ exports.createPost = (req, res) => {
 
   //   Destructure data from req.body
   const { text, name, avatar } = req.body;
-  console.log("userID " + req.user.id);
   const userId = req.user.id;
   //   Create new post
   const newPost = new Post({ text, name, avatar, userId });

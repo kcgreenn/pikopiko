@@ -20,7 +20,8 @@ const TextAreaGroup = ({
   value,
   info,
   handleChange,
-  required
+  required,
+  placeholder = ""
 }) => {
   return (
     <Form.Group controlId={name}>
@@ -32,6 +33,7 @@ const TextAreaGroup = ({
         value={value}
         isInvalid={error}
         required={required ? true : false}
+        placeholder={placeholder}
       />
       {info && <Form.Text className="text-muted">{info}</Form.Text>}
       <Form.Control.Feedback type="invalid">

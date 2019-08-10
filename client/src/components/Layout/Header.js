@@ -46,6 +46,9 @@ class Header extends React.Component {
             style={{ borderRadius: "50%", width: "25px", marginRight: "5px" }}
           />
         </Nav.Link>
+        <Nav.Link as={Link} to="/feed">
+          Feed
+        </Nav.Link>
         <Nav.Link href="/" onClick={this.logoutHandler}>
           Log Out
         </Nav.Link>

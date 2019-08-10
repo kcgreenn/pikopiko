@@ -37,7 +37,6 @@ class Profile extends React.Component {
       nextProps.profile.profile === null &&
       nextProps.profile.loading === true
     ) {
-      console.log("redirect");
       this.props.history.push("/not-found");
     }
   }

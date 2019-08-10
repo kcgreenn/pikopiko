@@ -22,6 +22,8 @@ import AddExperience from "./components/add-credentials/AddExperience";
 import AddEducation from "./components/add-credentials/AddEducation";
 import Profiles from "./components/profiles/Profiles";
 import Profile from "./components/profile/Profile";
+import Posts from "./components/posts/Posts";
+import Post from "./components/post/Post";
 import NotFound from "./components/not-found/NotFound";
 
 // Redux Configuration
@@ -82,6 +84,12 @@ function App() {
         <Route path="/profiles" component={Profiles} exact />
         <Route path="/profile/:handle" component={Profile} exact />
         <Route path="/not-found" component={NotFound} exact />
+        <Switch>
+          <PrivateRoute path="/feed" component={Posts} exact />
+        </Switch>
+        <Switch>
+          <PrivateRoute path="/post/:id" component={Post} exact />
+        </Switch>
         <Footer />
       </Router>
     </Provider>
