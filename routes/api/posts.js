@@ -67,7 +67,7 @@ router.post(
   addCommenttoPost
 );
 
-// @route   DELETE api/posts/comment/:id/comment_id
+// @route   DELETE api/posts/comment/:id/:comment_id
 // @desc    Delete a comment of given id
 // @access  Private
 router.delete(

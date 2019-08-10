@@ -12,10 +12,16 @@ const ProfileSchema = new Schema({
     required: true,
     max: 40
   },
-  occupation: {
+  company: {
     type: String
   },
   bio: {
+    type: String
+  },
+  website: {
+    type: String
+  },
+  githubusername: {
     type: String
   },
   location: {
@@ -25,7 +31,7 @@ const ProfileSchema = new Schema({
     type: String,
     required: true
   },
-  interests: {
+  skills: {
     type: [String],
     required: true
   },
@@ -99,6 +105,12 @@ const ProfileSchema = new Schema({
       type: String
     },
     linkedin: {
+      type: String
+    },
+    twitter: {
+      type: String
+    },
+    facebook: {
       type: String
     }
   },

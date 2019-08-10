@@ -43,7 +43,7 @@ exports.deleteComment = (req, res) => {
       ) {
         errors.comment = "Comment not found";
         res.status(404).json(errors);
-      } else if (post.comments.userId !== req.user.id) {
+      } else if (post.comments.userId !== req.userId) {
         errors.user = "Not authorizes to delete that comment";
         res.status(401).json(errors);
       }
