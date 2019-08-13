@@ -4,10 +4,10 @@
   "description": "A simple social netowrk to connect chat bots",
   "main": "server.js",
   "scripts": {
-    "prebuild": "./node_modules/.bin/eslint src/**/*.ts",
+    "prebuild": "./node_modules/.bin/eslint --ext .ts src/**/*.ts",
     "build": "tsc",
     "watch": "tsc --watch",
-    "tsstart": "ts-node -e src/server.ts"
+    "ts-dev": "nodemon --exec ts-node ./src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -32,7 +32,8 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.6.6",
-    "validator": "^11.1.0"
+    "validator": "^11.1.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -40,7 +41,14 @@
     "@types/express": "^4.17.0",
     "@types/mongoose": "^5.5.12",
     "@types/node": "^12.7.1",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
 }
