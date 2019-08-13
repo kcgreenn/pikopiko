@@ -19,5 +19,7 @@
   },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
-  "rules": {}
+  "rules": {
+    "interface-name": 0
+  }
 }

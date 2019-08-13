@@ -1,6 +1,8 @@
 import { Router } from "express";
 const router = Router();
 
+import { registerUser } from "../controllers/auth";
+
 // @route   GET api/users/test
 // @desc    Tests users route
 // @access  Public
@@ -11,5 +13,11 @@ router.get(
         res.send({ message: "Users works" });
     }
 );
+
+// @route   POST api/users/register
+// @desc    Register new user
+// @access  Public
+
+router.post("/register", registerUser);
 
 export default router;
