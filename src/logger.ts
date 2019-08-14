@@ -1,31 +1,17 @@
-import { format, createLogger, transports } from "winston";
+import { LoggerModes } from "@overnightjs/logger";
+import path from "path";
+import fs from "fs";
 
-const logger = createLogger({
-    defaultMeta: { service: "face-bot-logger" },
-    format: format.combine(
-        format.errors({ stack: true }),
-        format.json(),
-        format.splat(),
-        format.timestamp({
-            format: "YYYY-MM-DD HH:mm:ss"
-        })
-    ),
-    level: "info",
-    transports: [
-    // write all logs with level 'info' and below to 'face-bot-combined.log'
-    // write all logs error(and below) to 'face-bot-error.log'
-        new transports.File({ filename: "face-bot-error.log", level: "error" }),
-        new transports.File({ filename: "face-bot-combined.log" })
-    ]
-});
+// Set the log file path
+const logFilePath = path.join(__dirname, "../picopico.log");
+process.env.OVERNIGHT_LOGGER_MODE = LoggerModes.File;
+process.env.OVERNIGHT_LOGGER_FILEPATH = logFilePath;
 
-// If not in production then ALSO log to the console with simple, colorized format
-if (process.env.NODE_ENV !== "production") {
-    logger.add(
-        new transports.Console({
-            format: format.combine(format.colorize(), format.simple())
-        })
-    );
-}
-
-export default logger;
+// Remove current log if it exists
+(function removeLog() {
+  try {
+    fs.unlinkSync(logFilePath);
+  } catch (e) {
+    return;
+  }
+})();

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = require("express");
-var router = express_1.Router();
-// @route   GET api/users/test
-// @desc    Tests users route
-// @access  Public
-router.get("/test", function (req, res) {
+const express_1 = require("express");
+const router = express_1.Router();
+const loginController_1 = require("../controllers/loginController");
+router.get("/test", (req, res) => {
     res.send({ message: "Users works" });
 });
+router.post("/register", loginController_1.registerUser);
 exports.default = router;
+//# sourceMappingURL=users.js.map

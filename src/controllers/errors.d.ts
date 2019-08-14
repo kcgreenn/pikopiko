@@ -1,4 +1,4 @@
-export interface IErrors {
+export interface ErrorsI {
     email?: string;
     name?: string;
     password?: string;

@@ -1,18 +1,31 @@
-import mongoose from "mongoose";
+import { Schema, model, Document, Model } from "mongoose";
 
-export interface IUser extends mongoose.Document {
-    createdAt: Date;
-    email: string;
-    name: string;
-    password: string;
+// Declare what User document should look like
+export interface IUser extends Document {
+	createdAt: Date;
+	email: string;
+	name: string;
+	password: string;
 }
 
-const userSchema = new mongoose.Schema({
-    createdAt: { type: Date, default: Date.now },
-    email: { type: String, required: true },
-    name: { type: String, required: true },
-    password: { type: String, required: true }
-});
+// Extend the mongoose.Model so it can use properties
+export interface UserModel extends Model<IUser> {}
 
-const User = mongoose.model<IUser>("User", userSchema);
-export default User;
+export class User {
+	private _model: Model<IUser>;
+
+	constructor() {
+		const schema = new Schema({
+			createdAt: { type: Date, default: Date.now },
+			email: { type: String, required: true },
+			name: { type: String, maxlength: 24, minlength: 4, required: true },
+			password: { type: String, required: true }
+		});
+
+		this._model = model<IUser>("User", schema);
+	}
+
+	public get model(): Model<IUser> {
+		return this._model;
+	}
+}
