@@ -4,7 +4,7 @@ const tslib_1 = require("tslib");
 const core_1 = require("@overnightjs/core");
 const http_status_codes_1 = require("http-status-codes");
 const logger_1 = require("@overnightjs/logger");
-const mongo_1 = require("../mongo");
+const db_1 = require("../db");
 const bcryptjs_1 = tslib_1.__importDefault(require("bcryptjs"));
 const jwt_1 = require("@overnightjs/jwt");
 const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
@@ -16,7 +16,7 @@ let LoginController = class LoginController {
     post(req, res) {
         const errors = {};
         const { email, password } = req.body;
-        mongo_1.DB.Models.User.findOne({ email })
+        db_1.DB.Models.User.findOne({ email })
             .then((user) => {
             if (user === null) {
                 errors.email = "User not found";

@@ -16,11 +16,11 @@ class MyServer extends core_1.Server {
     setupControllers() {
         const registerController = new controllers_1.RegisterController();
         const loginController = new controllers_1.LoginController();
-        const secureController = new controllers_1.SecureController();
+        const profileController = new controllers_1.ProfileController();
         super.addControllers([
             registerController,
             loginController,
-            secureController
+            profileController
         ]);
     }
     start(port) {

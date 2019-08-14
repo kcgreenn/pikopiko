@@ -4,7 +4,7 @@ const tslib_1 = require("tslib");
 const core_1 = require("@overnightjs/core");
 const http_status_codes_1 = require("http-status-codes");
 const logger_1 = require("@overnightjs/logger");
-const mongo_1 = require("../mongo");
+const db_1 = require("../db");
 const bcryptjs_1 = tslib_1.__importDefault(require("bcryptjs"));
 let RegisterController = class RegisterController {
     constructor() {
@@ -12,12 +12,12 @@ let RegisterController = class RegisterController {
     }
     post(req, res) {
         const errors = {};
-        const { email, name, password, password2 } = req.body;
+        const { email, password, password2 } = req.body;
         if (password !== password2) {
             errors.password2 = "Passwords must match";
             return res.status(http_status_codes_1.BAD_REQUEST).json(errors);
         }
-        mongo_1.DB.Models.User.findOne({ email: email })
+        db_1.DB.Models.User.findOne({ email: email })
             .then((user) => {
             if (user) {
                 errors.email =
@@ -27,9 +27,8 @@ let RegisterController = class RegisterController {
             bcryptjs_1.default
                 .hash(password, 12)
                 .then((hashedPassword) => {
-                const newUser = new mongo_1.DB.Models.User({
+                const newUser = new db_1.DB.Models.User({
                     email,
-                    name,
                     password: hashedPassword
                 });
                 newUser

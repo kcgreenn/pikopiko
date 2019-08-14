@@ -1,13 +1,20 @@
 import { Schema, model, Document, Model } from "mongoose";
 
 // username, interests, githubrepo, avatar, createdAt, technologies
+interface IInterests {
+	[index: number]: { text: string };
+}
+interface ITechnologies {
+	[index: number]: { text: string };
+}
 
 export interface IProfile extends Document {
 	avatar: string;
 	createdAt: Date;
 	githubrepo: string;
-	interests: string;
-	technologies: string;
+	handle: string;
+	interests: IInterests;
+	technologies: ITechnologies;
 	user: string;
 }
 
@@ -21,8 +28,9 @@ export class Profile {
 			avatar: { type: String },
 			createdAt: { type: Date, default: Date.now },
 			githubrepo: { type: String },
-			interests: { type: String },
-			technologies: { type: String },
+			handle: { type: String },
+			interests: { type: Array },
+			technologies: { type: Array },
 			user: { type: Schema.Types.ObjectId, ref: "users" }
 		});
 
