@@ -3,7 +3,7 @@ import { OK, BAD_REQUEST, NOT_FOUND } from "http-status-codes";
 import { Request, Response } from "express";
 import { Logger } from "@overnightjs/logger";
 import { ErrorsI } from "./errors";
-import { DB } from "../mongo";
+import { DB } from "../db";
 import bcrypt from "bcryptjs";
 import { JwtManager } from "@overnightjs/jwt";
 import dotenv from "dotenv";

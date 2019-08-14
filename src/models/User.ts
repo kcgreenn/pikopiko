@@ -4,7 +4,6 @@ import { Schema, model, Document, Model } from "mongoose";
 export interface IUser extends Document {
 	createdAt: Date;
 	email: string;
-	name: string;
 	password: string;
 }
 
@@ -18,7 +17,6 @@ export class User {
 		const schema = new Schema({
 			createdAt: { type: Date, default: Date.now },
 			email: { type: String, required: true },
-			name: { type: String, maxlength: 24, minlength: 4, required: true },
 			password: { type: String, required: true }
 		});
 

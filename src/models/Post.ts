@@ -1,64 +1,52 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema, model, Document, Model } from "mongoose";
 
-export interface ReplyI {
-    [index: number]: {
-        createdAt: Date;
-        text: string;
-        user: mongoose.Schema.Types.ObjectId;
-    };
+interface IComment {
+	[index: number]: { createdAt: Date; text: string; userName: string };
 }
-export interface LikeI {
-    [index: number]: { user: mongoose.Schema.Types.ObjectId };
+interface ILike {
+	[index: number]: { userId: string };
 }
 
-export interface PostI extends mongoose.Document {
-    createdAt: Date;
-    likes: LikeI;
-    replies: ReplyI;
-    text: string;
-    user: mongoose.Schema.Types.ObjectId;
+export interface IPost extends Document {
+	comments: IComment;
+	createdAt: Date;
+	likes: ILike;
+	text: string;
+	user: string;
 }
 
-const postSchema = new mongoose.Schema({
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    likes: {
-        type: [
-            {
-                user: {
-                    type: Schema.Types.ObjectId,
-                    ref: "users"
-                }
-            }
-        ]
-    },
-    replies: [
-        {
-            createdAt: {
-                type: Date,
-                defaullt: Date.now
-            },
-            text: {
-                type: String,
-                required: true
-            },
-            user: {
-                type: Schema.Types.ObjectId,
-                ref: "users"
-            }
-        }
-    ],
-    text: {
-        type: String,
-        required: true
-    },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "users"
-    }
-});
+// extends mongoose Model to use properties
+export interface PostModel extends Model<IPost> {}
 
-const Post = mongoose.model<PostI>("Post", postSchema);
-export default Post;
+export class Post {
+	private _model: Model<IPost>;
+
+	constructor() {
+		const schema = new Schema({
+			comments: [
+				{
+					createdAt: { type: Date, default: Date.now },
+					test: { type: String, required: true },
+					user: { type: Schema.Types.ObjectId, ref: "users" }
+				}
+			],
+			createdAt: { type: Date, default: Date.now },
+			likes: [
+				{
+					user: {
+						type: Schema.Types.ObjectId,
+						ref: "users"
+					}
+				}
+			],
+			text: { type: String, required: true },
+			user: { type: Schema.Types.ObjectId, ref: "users" }
+		});
+
+		this._model = model<IPost>("Post", schema);
+	}
+
+	public get model(): Model<IPost> {
+		return this._model;
+	}
+}

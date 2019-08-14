@@ -1,11 +1,20 @@
 import { connect, connection, Connection } from "mongoose";
-import { User, UserModel } from "./models/User";
+import {
+	User,
+	UserModel,
+	Post,
+	PostModel,
+	Profile,
+	ProfileModel
+} from "./models";
 import dotenv from "dotenv";
 import { Logger } from "@overnightjs/logger";
 dotenv.config();
 
 declare interface IModels {
 	User: UserModel;
+	Post: PostModel;
+	Profile: ProfileModel;
 }
 
 export class DB {
@@ -31,7 +40,9 @@ export class DB {
 
 		this._models = {
 			// initialize all models
-			User: new User().model
+			User: new User().model,
+			Post: new Post().model,
+			Profile: new Profile().model
 		};
 	}
 

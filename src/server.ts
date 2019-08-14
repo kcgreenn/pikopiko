@@ -5,7 +5,7 @@ import { Logger } from "@overnightjs/logger";
 import {
 	RegisterController,
 	LoginController,
-	SecureController
+	ProfileController
 } from "./controllers/";
 
 export default class MyServer extends Server {
@@ -24,12 +24,12 @@ export default class MyServer extends Server {
 	private setupControllers(): void {
 		const registerController = new RegisterController();
 		const loginController = new LoginController();
-		const secureController = new SecureController();
+		const profileController = new ProfileController();
 
 		super.addControllers([
 			registerController,
 			loginController,
-			secureController
+			profileController
 		]);
 	}
 

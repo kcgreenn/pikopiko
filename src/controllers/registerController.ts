@@ -3,7 +3,7 @@ import { BAD_REQUEST, CREATED } from "http-status-codes";
 import { Request, Response } from "express";
 import { Logger } from "@overnightjs/logger";
 import { ErrorsI } from "./errors";
-import { DB } from "../mongo";
+import { DB } from "../db";
 import bcrypt from "bcryptjs";
 
 @Controller("api/users")
@@ -19,7 +19,7 @@ export class RegisterController {
 	@Post("register")
 	private post(req: Request, res: Response) {
 		const errors: ErrorsI = {};
-		const { email, name, password, password2 } = req.body;
+		const { email, password, password2 } = req.body;
 		// Check if passwords are the same
 		if (password !== password2) {
 			errors.password2 = "Passwords must match";
@@ -39,7 +39,6 @@ export class RegisterController {
 					.then((hashedPassword) => {
 						const newUser = new DB.Models.User({
 							email,
-							name,
 							password: hashedPassword
 						});
 						newUser
