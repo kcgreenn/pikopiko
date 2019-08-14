@@ -6,13 +6,7 @@ import {
 	Put,
 	Delete
 } from "@overnightjs/core";
-import {
-	OK,
-	BAD_REQUEST,
-	NOT_FOUND,
-	CONFLICT,
-	CREATED
-} from "http-status-codes";
+import * as HttpStatus from "http-status-codes";
 import { Request, Response } from "express";
 import { Logger } from "@overnightjs/logger";
 import { JwtManager, ISecureRequest } from "@overnightjs/jwt";
@@ -45,7 +39,7 @@ export class ProfileController {
 			.catch((err) => {
 				this.logger.err(err);
 				errors.profile = "User does not have a profile";
-				res.status(NOT_FOUND).json(errors);
+				res.status(HttpStatus.NOT_FOUND).json(errors);
 			});
 	}
 
@@ -61,15 +55,19 @@ export class ProfileController {
 			.then((profile) => {
 				if (!profile) {
 					errors.profile = "There is no profile for this user";
-					return res.status(NOT_FOUND).json(errors);
+					return res.status(HttpStatus.NOT_FOUND).json(errors);
 				}
 				res.json(profile);
 			})
 			.catch((err) => {
 				this.logger.err(err);
-				res.status(BAD_REQUEST).json(err);
+				res.status(HttpStatus.BAD_REQUEST).json(err);
 			});
 	}
+
+	// @route	POST /api/profile
+	// @desc	Create current user's profile
+	// @access	Private
 
 	@Post("")
 	@Middleware(JwtManager.middleware)
@@ -93,7 +91,7 @@ export class ProfileController {
 						.then((profile) => {
 							if (profile) {
 								errors.handle = "That handle is already in use";
-								res.status(CONFLICT).json(errors);
+								res.status(HttpStatus.CONFLICT).json(errors);
 							} else {
 								// Create new profile
 								new db({
@@ -106,7 +104,9 @@ export class ProfileController {
 								})
 									.save()
 									.then((profile) =>
-										res.status(CREATED).json(profile)
+										res
+											.status(HttpStatus.CREATED)
+											.json(profile)
 									)
 									.catch((err) => {
 										res.json(err);
@@ -118,12 +118,66 @@ export class ProfileController {
 						});
 				} else {
 					errors.profile = "User already has profile";
-					res.status(CONFLICT).json(errors);
+					res.status(HttpStatus.CONFLICT).json(errors);
 				}
 			})
 			.catch((err) => {
 				errors.db = "Could not connect to database";
-				res.status(BAD_REQUEST).json(errors);
+				res.status(HttpStatus.BAD_REQUEST).json(errors);
+			});
+	}
+
+	// @route	PUT /api/profile
+	// @desc	Edit current user's profile
+	// @access	Private
+
+	@Put("")
+	@Middleware(JwtManager.middleware)
+	private editProfile(req: ISecureRequest, res: Response) {
+		const errors: ErrorsI = {};
+		const { avatar, githubrepo } = req.body;
+		let { interests, technologies } = req.body;
+		const userId = req.payload.user;
+		// Split interests into array
+		interests = interests !== undefined ? interests.split(",") : null;
+		// Split technologies into array
+		technologies =
+			technologies !== undefined ? technologies.split(",") : null;
+		const db = DB.Models.Profile;
+		db.findOneAndUpdate(
+			{ user: userId },
+			{ avatar, githubrepo, interests, technologies }
+		)
+			.then((profile) => res.status(HttpStatus.ACCEPTED).json(profile))
+			.catch((err) => {
+				this.logger.err(err);
+				res.json(err);
+			});
+	}
+
+	// @route	DELETE /api/profile
+	// @desc	Delete current user's profile
+	// @access	Private
+
+	@Delete("")
+	@Middleware(JwtManager.middleware)
+	private deleteProfile(req: ISecureRequest, res: Response) {
+		const errors: ErrorsI = {};
+		// Find User's Profile
+		const db = DB.Models.Profile;
+
+		db.findOneAndRemove({ user: req.payload.user })
+			.then(() => {
+				DB.Models.User.findByIdAndRemove({ _id: req.payload.user })
+					.then(() => res.json({ success: true }))
+					.catch((err) => {
+						this.logger.err(err);
+						res.json(err);
+					});
+			})
+			.catch((err) => {
+				this.logger.err(err);
+				res.json(err);
 			});
 	}
 }
