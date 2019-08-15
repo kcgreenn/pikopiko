@@ -4,13 +4,13 @@ interface IComment {
 	[index: number]: { createdAt: Date; text: string; userName: string };
 }
 interface ILike {
-	[index: number]: { userId: string };
+	[index: number]: { user: string };
 }
 
 export interface IPost extends Document {
-	comments: IComment;
+	comments: [];
 	createdAt: Date;
-	likes: ILike;
+	likes: string[];
 	text: string;
 	user: string;
 }

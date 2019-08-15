@@ -3,10 +3,11 @@ import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
 
 import {
-	RegisterController,
-	LoginController,
-	ProfileController
+	UserController,
+	ProfileController,
+	PostController
 } from "./controllers/";
+import { User } from "./models";
 
 export default class MyServer extends Server {
 	private readonly logger: Logger;
@@ -22,14 +23,14 @@ export default class MyServer extends Server {
 		this.setupControllers();
 	}
 	private setupControllers(): void {
-		const registerController = new RegisterController();
-		const loginController = new LoginController();
+		const userController = new UserController();
 		const profileController = new ProfileController();
+		const postController = new PostController();
 
 		super.addControllers([
-			registerController,
-			loginController,
-			profileController
+			userController,
+			profileController,
+			postController
 		]);
 	}
 

@@ -14,7 +14,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import { ErrorsI } from "./errors";
 import { DB } from "../db";
-import { Profile } from "src/models";
 
 @Controller("api/profile")
 export class ProfileController {
@@ -74,13 +73,14 @@ export class ProfileController {
 	private createProfile(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
 		const { avatar, githubrepo, handle } = req.body;
-		let { interests, technologies } = req.body;
+		let { following, interests, technologies } = req.body;
 		const userId = req.payload.user;
 		// Split interests into array
 		interests = interests !== undefined ? interests.split(",") : null;
 		// Split technologies into array
 		technologies =
 			technologies !== undefined ? technologies.split(",") : null;
+		following = following !== undefined ? following.split(",") : null;
 		const db = DB.Models.Profile;
 		// Check if User already has profile
 		db.findOne({ userId })

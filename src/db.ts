@@ -28,7 +28,7 @@ export class DB {
 		if (process.env.MONGO_URI !== undefined) {
 			connect(
 				process.env.MONGO_URI,
-				{ useNewUrlParser: true }
+				{ useNewUrlParser: true, useFindAndModify: false }
 			);
 		}
 

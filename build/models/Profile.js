@@ -8,8 +8,8 @@ class Profile {
             createdAt: { type: Date, default: Date.now },
             githubrepo: { type: String },
             handle: { type: String },
-            interests: { type: String },
-            technologies: { type: String },
+            interests: { type: Array },
+            technologies: { type: Array },
             user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" }
         });
         this._model = mongoose_1.model("Profile", schema);

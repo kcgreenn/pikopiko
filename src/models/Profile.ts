@@ -7,14 +7,18 @@ interface IInterests {
 interface ITechnologies {
 	[index: number]: { text: string };
 }
+interface IFollowing {
+	[index: number]: { user: string };
+}
 
 export interface IProfile extends Document {
 	avatar: string;
 	createdAt: Date;
+	following: [IFollowing];
 	githubrepo: string;
 	handle: string;
-	interests: IInterests;
-	technologies: ITechnologies;
+	interests: [IInterests];
+	technologies: [ITechnologies];
 	user: string;
 }
 
@@ -27,6 +31,7 @@ export class Profile {
 		const schema = new Schema({
 			avatar: { type: String },
 			createdAt: { type: Date, default: Date.now },
+			following: { type: Array },
 			githubrepo: { type: String },
 			handle: { type: String },
 			interests: { type: Array },
