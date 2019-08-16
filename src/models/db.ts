@@ -47,7 +47,7 @@ export class DB {
 		return DB.instance._models;
 	}
 	private connected() {
-		DB.instance.logger.info("Mongoose has connected");
+		DB.instance.logger.imp("Mongoose has connected");
 	}
 	private error() {
 		DB.instance.logger.err(this.error);

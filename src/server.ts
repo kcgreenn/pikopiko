@@ -1,6 +1,8 @@
 import bodyParser from "body-parser";
+import express, { Request, Response } from "express";
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
+import path from "path";
 
 import {
 	UserController,
@@ -35,8 +37,18 @@ export default class MyServer extends Server {
 	}
 
 	public start(port: number) {
+		// Serve static assets if in production
+		if (process.env.NODE_ENV === "production") {
+			this.app.use(express.static("client/build"));
+
+			this.app.get("*", (req: Request, res: Response) => {
+				res.sendFile(
+					path.resolve(__dirname, "client", "build", "index.html")
+				);
+			});
+		}
 		this.app.listen(port, () => {
-			this.logger.info(`Server started on port: ${port}`);
+			this.logger.imp(`Server started on port: ${port}`);
 		});
 	}
 }
