@@ -1,17 +1,11 @@
 import { connect, connection, Connection } from "mongoose";
-import {
-	User,
-	UserModel,
-	Post,
-	PostModel,
-	Profile,
-	ProfileModel
-} from "./models";
+import { User, UserModel, Post, PostModel, Profile, ProfileModel } from "./";
 import dotenv from "dotenv";
 import { Logger } from "@overnightjs/logger";
+import { IReply } from "./Post";
 dotenv.config();
 
-declare interface IModels {
+export interface IModels {
 	User: UserModel;
 	Post: PostModel;
 	Profile: ProfileModel;

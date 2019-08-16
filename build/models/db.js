@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const mongoose_1 = require("mongoose");
-const models_1 = require("./models");
+const _1 = require("./");
 const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
 const logger_1 = require("@overnightjs/logger");
 dotenv_1.default.config();
@@ -16,9 +16,9 @@ class DB {
         this._db.on("open", this.connected);
         this._db.on("error", this.error);
         this._models = {
-            User: new models_1.User().model,
-            Post: new models_1.Post().model,
-            Profile: new models_1.Profile().model
+            User: new _1.User().model,
+            Post: new _1.Post().model,
+            Profile: new _1.Profile().model
         };
     }
     static get Models() {

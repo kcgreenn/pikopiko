@@ -3,10 +3,11 @@ import * as HttpStatus from "http-status-codes";
 import { Request, Response } from "express";
 import { Logger } from "@overnightjs/logger";
 import { ErrorsI } from "./errors";
-import { DB } from "../db";
+import db from "../start";
 import { JwtManager, ISecureRequest } from "@overnightjs/jwt";
+import { IReply } from "../models/Post";
 
-@Controller("/api/posts")
+@Controller("api/posts")
 export class PostController {
 	private readonly logger: Logger;
 
@@ -23,9 +24,10 @@ export class PostController {
 	@Get("")
 	private getRecentPosts(req: Request, res: Response) {
 		const errors: ErrorsI = {};
-
-		DB.Models.Post.find()
+		// Get 10 most recent posts
+		db.Post.find()
 			.sort({ date: -1 })
+			.limit(10)
 			.then((posts) => res.json(posts))
 			.catch((err) => {
 				errors.db = "Could not retrieve posts";
@@ -41,9 +43,13 @@ export class PostController {
 	@Get(":postId")
 	private getPostById(req: Request, res: Response) {
 		const errors: ErrorsI = {};
-
-		DB.Models.Post.findById(req.params.id)
-			.then((post) => res.status(HttpStatus.OK).json(post))
+		// Search for post of given id
+		db.Post.findById(req.params.postId)
+			.then((post) => {
+				if (post) {
+					res.status(HttpStatus.OK).json(post);
+				}
+			})
 			.catch((err) => {
 				errors.db = "Could not find that post";
 				this.logger.err(errors);
@@ -57,13 +63,13 @@ export class PostController {
 
 	@Post("")
 	@Middleware(JwtManager.middleware)
-	private createPost(req: ISecureRequest, res: Response) {
+	private addPost(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
 
 		const { text } = req.body;
-		const userId = req.payload.user;
+		const { userId, userName } = req.payload;
 
-		new DB.Models.Post({ user: userId, text })
+		new db.Post({ user: userId, text, userName })
 			.save()
 			.then((post) => res.status(HttpStatus.CREATED).json(post))
 			.catch((err) => {
@@ -77,19 +83,21 @@ export class PostController {
 	// @desc    Like/Unlike post
 	// @access  Private
 
-	@Post("/:postId/like")
+	@Post(":postId/like")
 	@Middleware(JwtManager.middleware)
 	private likePost(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
-
-		DB.Models.Post.findById(req.params.id).then((post) => {
+		db.Post.findById(req.params.postId).then((post) => {
 			if (post) {
 				if (
-					post.likes.filter((like) => (like = req.payload.user))
+					post.likes.filter((like) => (like = req.payload.userId))
 						.length > 0
 				) {
 					// If user has already liked this post, unlike
-					post.likes.splice(post.likes.indexOf(req.payload.user), 1);
+					post.likes.splice(
+						post.likes.indexOf(req.payload.userId),
+						1
+					);
 					// Save post
 					post.save()
 						.then((post) => res.status(HttpStatus.OK).json(post))
@@ -100,7 +108,7 @@ export class PostController {
 						});
 				} else {
 					// If user has not liked this post, like
-					post.likes.push(req.payload.user);
+					post.likes.push(req.payload.userId);
 					post.save()
 						.then((post) => res.status(HttpStatus.OK).json(post))
 						.catch((err) => {
@@ -115,5 +123,51 @@ export class PostController {
 				return res.status(HttpStatus.NOT_FOUND).json(errors);
 			}
 		});
+	}
+
+	// @route	Post /api/posts/:postId/replies
+	// @desc	Reply to post
+	// @access	Private
+
+	@Post(":postId/replies")
+	@Middleware(JwtManager.middleware)
+	private replyToPost(req: ISecureRequest, res: Response) {
+		const errors: ErrorsI = {};
+
+		db.Post.findById(req.params.postId)
+			.then((post) => {
+				if (post) {
+					// If post is found, create new reply and push to replies arraya
+					const newReply: {
+						text: string;
+						userName: string;
+						user: string;
+					} = {
+						text: req.body.text,
+						userName: req.payload.userName,
+						user: req.payload.userId
+					};
+					post.replies.push(newReply);
+					// Save post
+					post.save()
+						.then((post) =>
+							res.status(HttpStatus.CREATED).json(post)
+						)
+						.catch((err) => {
+							errors.db = "Could not create post";
+							this.logger.err(err);
+							res.status(HttpStatus.BAD_REQUEST).json(errors);
+						});
+				} else {
+					errors.db = "Could not find post";
+					this.logger.err(errors);
+					return res.status(HttpStatus.NOT_FOUND).json(errors);
+				}
+			})
+			.catch((err) => {
+				errors.db = "Could not find post";
+				this.logger.err(err);
+				return res.status(HttpStatus.NOT_FOUND).json(errors);
+			});
 	}
 }

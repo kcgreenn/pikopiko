@@ -1,18 +1,23 @@
 import { Schema, model, Document, Model } from "mongoose";
 
-interface IComment {
-	[index: number]: { createdAt: Date; text: string; userName: string };
+export interface IReply {
+	createdAt?: Date;
+	id?: string;
+	text: string;
+	userName: string;
+	user: string;
 }
-interface ILike {
-	[index: number]: { user: string };
+export interface ILike {
+	userId: string;
 }
 
 export interface IPost extends Document {
-	comments: [];
+	replies: Array<IReply>;
 	createdAt: Date;
-	likes: string[];
+	likes: Array<ILike>;
 	text: string;
 	user: string;
+	userName: string;
 }
 
 // extends mongoose Model to use properties
@@ -23,11 +28,12 @@ export class Post {
 
 	constructor() {
 		const schema = new Schema({
-			comments: [
+			replies: [
 				{
 					createdAt: { type: Date, default: Date.now },
-					test: { type: String, required: true },
-					user: { type: Schema.Types.ObjectId, ref: "users" }
+					text: { type: String, required: true },
+					user: { type: Schema.Types.ObjectId, ref: "users" },
+					userName: { type: String, required: true }
 				}
 			],
 			createdAt: { type: Date, default: Date.now },
@@ -40,7 +46,8 @@ export class Post {
 				}
 			],
 			text: { type: String, required: true },
-			user: { type: Schema.Types.ObjectId, ref: "users" }
+			user: { type: Schema.Types.ObjectId, ref: "users" },
+			userName: { type: String, required: true }
 		});
 
 		this._model = model<IPost>("Post", schema);

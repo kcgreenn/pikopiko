@@ -4,10 +4,10 @@ const mongoose_1 = require("mongoose");
 class Post {
     constructor() {
         const schema = new mongoose_1.Schema({
-            comments: [
+            replies: [
                 {
                     createdAt: { type: Date, default: Date.now },
-                    test: { type: String, required: true },
+                    text: { type: String, required: true },
                     user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" }
                 }
             ],
@@ -21,7 +21,8 @@ class Post {
                 }
             ],
             text: { type: String, required: true },
-            user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" }
+            user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" },
+            userName: { type: String, required: true }
         });
         this._model = mongoose_1.model("Post", schema);
     }

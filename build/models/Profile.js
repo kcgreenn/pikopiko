@@ -5,11 +5,19 @@ class Profile {
     constructor() {
         const schema = new mongoose_1.Schema({
             avatar: { type: String },
+            bio: { type: String },
             createdAt: { type: Date, default: Date.now },
-            githubrepo: { type: String },
-            handle: { type: String },
-            interests: { type: Array },
-            technologies: { type: Array },
+            following: [
+                {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: "users"
+                }
+            ],
+            interests: [
+                {
+                    type: String
+                }
+            ],
             user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" }
         });
         this._model = mongoose_1.model("Profile", schema);

@@ -7,14 +7,14 @@ const logger_1 = require("@overnightjs/logger");
 const jwt_1 = require("@overnightjs/jwt");
 const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
 dotenv_1.default.config();
-const db_1 = require("../db");
+const start_1 = tslib_1.__importDefault(require("../start"));
 let ProfileController = class ProfileController {
     constructor() {
         this.logger = new logger_1.Logger();
     }
-    getById(req, res) {
+    getProfileById(req, res) {
         const errors = {};
-        db_1.DB.Models.Profile.findOne(req.params.userId)
+        start_1.default.Profile.findOne({ user: req.params.userId })
             .then((profile) => {
             if (profile) {
                 res.json(profile);
@@ -26,9 +26,9 @@ let ProfileController = class ProfileController {
             res.status(HttpStatus.NOT_FOUND).json(errors);
         });
     }
-    get(req, res) {
+    getProfile(req, res) {
         const errors = {};
-        db_1.DB.Models.Profile.findOne({ user: req.payload.user })
+        start_1.default.Profile.findOne({ user: req.payload.userId })
             .then((profile) => {
             if (!profile) {
                 errors.profile = "There is no profile for this user";
@@ -43,80 +43,59 @@ let ProfileController = class ProfileController {
     }
     createProfile(req, res) {
         const errors = {};
-        const { avatar, githubrepo, handle } = req.body;
-        let { interests, technologies } = req.body;
-        const userId = req.payload.user;
+        const { avatar, bio } = req.body;
+        let { following, interests } = req.body;
+        const userId = req.payload.userId;
         interests = interests !== undefined ? interests.split(",") : null;
-        technologies =
-            technologies !== undefined ? technologies.split(",") : null;
-        const db = db_1.DB.Models.Profile;
-        db.findOne({ userId })
+        following = following !== undefined ? following.split(",") : null;
+        start_1.default.Profile.findOne({ userId })
             .then((profile) => {
             if (!profile) {
-                db.findOne({ handle })
-                    .then((profile) => {
-                    if (profile) {
-                        errors.handle = "That handle is already in use";
-                        res.status(HttpStatus.CONFLICT).json(errors);
-                    }
-                    else {
-                        new db({
-                            avatar,
-                            githubrepo,
-                            handle,
-                            interests,
-                            technologies,
-                            user: userId
-                        })
-                            .save()
-                            .then((profile) => res
-                            .status(HttpStatus.CREATED)
-                            .json(profile))
-                            .catch((err) => {
-                            res.json(err);
-                        });
-                    }
+                new start_1.default.Profile({
+                    avatar,
+                    bio,
+                    interests,
+                    user: userId
                 })
+                    .save()
+                    .then((profile) => res.status(HttpStatus.CREATED).json(profile))
                     .catch((err) => {
                     res.json(err);
                 });
             }
-            else {
-                errors.profile = "User already has profile";
-                res.status(HttpStatus.CONFLICT).json(errors);
-            }
         })
             .catch((err) => {
-            errors.db = "Could not connect to database";
+            errors.db = "Could not complete request";
+            this.logger.err(errors);
             res.status(HttpStatus.BAD_REQUEST).json(errors);
         });
     }
     editProfile(req, res) {
         const errors = {};
-        const { avatar, githubrepo } = req.body;
-        let { interests, technologies } = req.body;
-        const userId = req.payload.user;
+        const { avatar, bio } = req.body;
+        let { interests } = req.body;
+        const userId = req.payload.userId;
         interests = interests !== undefined ? interests.split(",") : null;
-        technologies =
-            technologies !== undefined ? technologies.split(",") : null;
-        const db = db_1.DB.Models.Profile;
-        db.findOneAndUpdate({ user: userId }, { avatar, githubrepo, interests, technologies })
+        start_1.default.Profile.findOneAndUpdate({ user: userId }, { avatar, bio, interests }, {
+            new: true
+        })
             .then((profile) => res.status(HttpStatus.ACCEPTED).json(profile))
             .catch((err) => {
-            this.logger.err(err);
-            res.json(err);
+            errors.db = "Could not update profile";
+            this.logger.err(errors);
+            res.json(errors);
         });
     }
     deleteProfile(req, res) {
         const errors = {};
-        const db = db_1.DB.Models.Profile;
-        db.findOneAndRemove({ user: req.payload.user })
+        start_1.default.Profile.findOneAndRemove({ user: req.payload.userId })
             .then(() => {
-            db_1.DB.Models.User.findByIdAndRemove({ _id: req.payload.user })
+            start_1.default.User.findByIdAndRemove({ _id: req.payload.userId })
                 .then(() => res.json({ success: true }))
                 .catch((err) => {
-                this.logger.err(err);
-                res.json(err);
+                errors.db = "Could not delete user";
+                this.logger.err(errors);
+                res.json(errors);
             });
         })
             .catch((err) => {
@@ -126,18 +105,18 @@ let ProfileController = class ProfileController {
     }
 };
 tslib_1.__decorate([
-    core_1.Get(":userId"),
+    core_1.Get(":username"),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
-], ProfileController.prototype, "getById", null);
+], ProfileController.prototype, "getProfileById", null);
 tslib_1.__decorate([
     core_1.Get(""),
     core_1.Middleware(jwt_1.JwtManager.middleware),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
-], ProfileController.prototype, "get", null);
+], ProfileController.prototype, "getProfile", null);
 tslib_1.__decorate([
     core_1.Post(""),
     core_1.Middleware(jwt_1.JwtManager.middleware),

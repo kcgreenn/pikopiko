@@ -13,7 +13,7 @@ import { JwtManager, ISecureRequest } from "@overnightjs/jwt";
 import dotenv from "dotenv";
 dotenv.config();
 import { ErrorsI } from "./errors";
-import { DB } from "../db";
+import db from "../start";
 
 @Controller("api/profile")
 export class ProfileController {
@@ -26,10 +26,10 @@ export class ProfileController {
 	// @route	GET /api/profile/:username
 	// @desc	Get profile by username
 	// @access	Public
-	@Get(":userId")
-	private getById(req: Request, res: Response) {
+	@Get(":username")
+	private getProfileByUsername(req: Request, res: Response) {
 		const errors: ErrorsI = {};
-		DB.Models.Profile.findOne(req.params.userId)
+		db.Profile.findOne({ user: req.params.userId })
 			.then((profile) => {
 				if (profile) {
 					res.json(profile);
@@ -48,9 +48,9 @@ export class ProfileController {
 
 	@Get("")
 	@Middleware(JwtManager.middleware)
-	private get(req: ISecureRequest, res: Response) {
+	private getProfile(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
-		DB.Models.Profile.findOne({ user: req.payload.user })
+		db.Profile.findOne({ user: req.payload.userId })
 			.then((profile) => {
 				if (!profile) {
 					errors.profile = "There is no profile for this user";
@@ -72,57 +72,37 @@ export class ProfileController {
 	@Middleware(JwtManager.middleware)
 	private createProfile(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
-		const { avatar, githubrepo, handle } = req.body;
-		let { following, interests, technologies } = req.body;
-		const userId = req.payload.user;
+		const { avatar, bio } = req.body;
+		let { following, interests } = req.body;
+		const userId = req.payload.userId;
 		// Split interests into array
 		interests = interests !== undefined ? interests.split(",") : null;
-		// Split technologies into array
-		technologies =
-			technologies !== undefined ? technologies.split(",") : null;
+
 		following = following !== undefined ? following.split(",") : null;
-		const db = DB.Models.Profile;
 		// Check if User already has profile
-		db.findOne({ userId })
+		db.Profile.findOne({ userId })
 			.then((profile) => {
 				// If user does not have profile, check if handle is taken
 				if (!profile) {
-					db.findOne({ handle })
-						.then((profile) => {
-							if (profile) {
-								errors.handle = "That handle is already in use";
-								res.status(HttpStatus.CONFLICT).json(errors);
-							} else {
-								// Create new profile
-								new db({
-									avatar,
-									githubrepo,
-									handle,
-									interests,
-									technologies,
-									user: userId
-								})
-									.save()
-									.then((profile) =>
-										res
-											.status(HttpStatus.CREATED)
-											.json(profile)
-									)
-									.catch((err) => {
-										res.json(err);
-									});
-							}
-						})
+					// Create new profile
+					new db.Profile({
+						avatar,
+						bio,
+						interests,
+						user: userId
+					})
+						.save()
+						.then((profile) =>
+							res.status(HttpStatus.CREATED).json(profile)
+						)
 						.catch((err) => {
 							res.json(err);
 						});
-				} else {
-					errors.profile = "User already has profile";
-					res.status(HttpStatus.CONFLICT).json(errors);
 				}
 			})
 			.catch((err) => {
-				errors.db = "Could not connect to database";
+				errors.db = "Could not complete request";
+				this.logger.err(errors);
 				res.status(HttpStatus.BAD_REQUEST).json(errors);
 			});
 	}
@@ -135,23 +115,24 @@ export class ProfileController {
 	@Middleware(JwtManager.middleware)
 	private editProfile(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
-		const { avatar, githubrepo } = req.body;
-		let { interests, technologies } = req.body;
-		const userId = req.payload.user;
+		const { avatar, bio } = req.body;
+		let { interests } = req.body;
+		const userId = req.payload.userId;
 		// Split interests into array
 		interests = interests !== undefined ? interests.split(",") : null;
-		// Split technologies into array
-		technologies =
-			technologies !== undefined ? technologies.split(",") : null;
-		const db = DB.Models.Profile;
-		db.findOneAndUpdate(
+
+		db.Profile.findOneAndUpdate(
 			{ user: userId },
-			{ avatar, githubrepo, interests, technologies }
+			{ avatar, bio, interests },
+			{
+				new: true
+			}
 		)
 			.then((profile) => res.status(HttpStatus.ACCEPTED).json(profile))
 			.catch((err) => {
-				this.logger.err(err);
-				res.json(err);
+				errors.db = "Could not update profile";
+				this.logger.err(errors);
+				res.json(errors);
 			});
 	}
 
@@ -164,15 +145,15 @@ export class ProfileController {
 	private deleteProfile(req: ISecureRequest, res: Response) {
 		const errors: ErrorsI = {};
 		// Find User's Profile
-		const db = DB.Models.Profile;
 
-		db.findOneAndRemove({ user: req.payload.user })
+		db.Profile.findOneAndRemove({ user: req.payload.userId })
 			.then(() => {
-				DB.Models.User.findByIdAndRemove({ _id: req.payload.user })
+				db.User.findByIdAndRemove({ _id: req.payload.userId })
 					.then(() => res.json({ success: true }))
 					.catch((err) => {
-						this.logger.err(err);
-						res.json(err);
+						errors.db = "Could not delete user";
+						this.logger.err(errors);
+						res.json(errors);
 					});
 			})
 			.catch((err) => {
@@ -180,4 +161,6 @@ export class ProfileController {
 				res.json(err);
 			});
 	}
+
+	// TODO Get profiles of users with same interests
 }

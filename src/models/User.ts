@@ -5,6 +5,7 @@ export interface IUser extends Document {
 	createdAt: Date;
 	email: string;
 	password: string;
+	username: string;
 }
 
 // Extend the mongoose.Model so it can use properties
@@ -17,7 +18,8 @@ export class User {
 		const schema = new Schema({
 			createdAt: { type: Date, default: Date.now },
 			email: { type: String, required: true },
-			password: { type: String, required: true }
+			password: { type: String, required: true },
+			username: { type: String, required: true }
 		});
 
 		this._model = model<IUser>("User", schema);

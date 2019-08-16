@@ -14,13 +14,13 @@ class MyServer extends core_1.Server {
         this.setupControllers();
     }
     setupControllers() {
-        const registerController = new controllers_1.RegisterController();
-        const loginController = new controllers_1.LoginController();
+        const userController = new controllers_1.UserController();
         const profileController = new controllers_1.ProfileController();
+        const postController = new controllers_1.PostController();
         super.addControllers([
-            registerController,
-            loginController,
-            profileController
+            userController,
+            profileController,
+            postController
         ]);
     }
     start(port) {

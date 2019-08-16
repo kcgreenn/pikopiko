@@ -5,7 +5,7 @@ export interface ErrorsI {
 	password2?: string;
 	db?: string;
 	profile?: string;
-	handle?: string;
+	username?: string;
 	user?: string;
 	post?: string;
 	text?: string;

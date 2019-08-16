@@ -4,21 +4,16 @@ import { Schema, model, Document, Model } from "mongoose";
 interface IInterests {
 	[index: number]: { text: string };
 }
-interface ITechnologies {
-	[index: number]: { text: string };
-}
 interface IFollowing {
 	[index: number]: { user: string };
 }
 
 export interface IProfile extends Document {
-	avatar: string;
+	avatar?: string;
+	bio?: string;
 	createdAt: Date;
-	following: [IFollowing];
-	githubrepo: string;
-	handle: string;
-	interests: [IInterests];
-	technologies: [ITechnologies];
+	following?: [IFollowing];
+	interests?: [IInterests];
 	user: string;
 }
 
@@ -30,12 +25,19 @@ export class Profile {
 	constructor() {
 		const schema = new Schema({
 			avatar: { type: String },
+			bio: { type: String },
 			createdAt: { type: Date, default: Date.now },
-			following: { type: Array },
-			githubrepo: { type: String },
-			handle: { type: String },
-			interests: { type: Array },
-			technologies: { type: Array },
+			following: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			],
+			interests: [
+				{
+					type: String
+				}
+			],
 			user: { type: Schema.Types.ObjectId, ref: "users" }
 		});
 
