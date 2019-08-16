@@ -12,7 +12,7 @@ let ProfileController = class ProfileController {
     constructor() {
         this.logger = new logger_1.Logger();
     }
-    getProfileById(req, res) {
+    getProfileByUsername(req, res) {
         const errors = {};
         start_1.default.Profile.findOne({ user: req.params.userId })
             .then((profile) => {
@@ -109,7 +109,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
-], ProfileController.prototype, "getProfileById", null);
+], ProfileController.prototype, "getProfileByUsername", null);
 tslib_1.__decorate([
     core_1.Get(""),
     core_1.Middleware(jwt_1.JwtManager.middleware),

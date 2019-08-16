@@ -14,6 +14,7 @@ let PostController = class PostController {
         const errors = {};
         start_1.default.Post.find()
             .sort({ date: -1 })
+            .limit(10)
             .then((posts) => res.json(posts))
             .catch((err) => {
             errors.db = "Could not retrieve posts";
@@ -23,15 +24,19 @@ let PostController = class PostController {
     }
     getPostById(req, res) {
         const errors = {};
-        start_1.default.Post.findById(req.params.id)
-            .then((post) => res.status(HttpStatus.OK).json(post))
+        start_1.default.Post.findById(req.params.postId)
+            .then((post) => {
+            if (post) {
+                res.status(HttpStatus.OK).json(post);
+            }
+        })
             .catch((err) => {
             errors.db = "Could not find that post";
             this.logger.err(errors);
             res.status(HttpStatus.NOT_FOUND).json(errors);
         });
     }
-    createPost(req, res) {
+    addPost(req, res) {
         const errors = {};
         const { text } = req.body;
         const { userId, userName } = req.payload;
@@ -46,11 +51,11 @@ let PostController = class PostController {
     }
     likePost(req, res) {
         const errors = {};
-        start_1.default.Post.findById(req.params.id).then((post) => {
+        start_1.default.Post.findById(req.params.postId).then((post) => {
             if (post) {
-                if (post.likes.filter((like) => (like = req.payload.user))
+                if (post.likes.filter((like) => (like = req.payload.userId))
                     .length > 0) {
-                    post.likes.splice(post.likes.indexOf(req.payload.user), 1);
+                    post.likes.splice(post.likes.indexOf(req.payload.userId), 1);
                     post.save()
                         .then((post) => res.status(HttpStatus.OK).json(post))
                         .catch((err) => {
@@ -60,7 +65,7 @@ let PostController = class PostController {
                     });
                 }
                 else {
-                    post.likes.push(req.payload.user);
+                    post.likes.push(req.payload.userId);
                     post.save()
                         .then((post) => res.status(HttpStatus.OK).json(post))
                         .catch((err) => {
@@ -75,6 +80,37 @@ let PostController = class PostController {
                 this.logger.err(errors);
                 return res.status(HttpStatus.NOT_FOUND).json(errors);
             }
+        });
+    }
+    replyToPost(req, res) {
+        const errors = {};
+        start_1.default.Post.findById(req.params.postId)
+            .then((post) => {
+            if (post) {
+                const newReply = {
+                    text: req.body.text,
+                    userName: req.payload.userName,
+                    user: req.payload.userId
+                };
+                post.replies.push(newReply);
+                post.save()
+                    .then((post) => res.status(HttpStatus.CREATED).json(post))
+                    .catch((err) => {
+                    errors.db = "Could not create post";
+                    this.logger.err(err);
+                    res.status(HttpStatus.BAD_REQUEST).json(errors);
+                });
+            }
+            else {
+                errors.db = "Could not find post";
+                this.logger.err(errors);
+                return res.status(HttpStatus.NOT_FOUND).json(errors);
+            }
+        })
+            .catch((err) => {
+            errors.db = "Could not find post";
+            this.logger.err(err);
+            return res.status(HttpStatus.NOT_FOUND).json(errors);
         });
     }
 };
@@ -96,16 +132,23 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
-], PostController.prototype, "createPost", null);
+], PostController.prototype, "addPost", null);
 tslib_1.__decorate([
-    core_1.Post("/:postId/like"),
+    core_1.Post(":postId/like"),
     core_1.Middleware(jwt_1.JwtManager.middleware),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], PostController.prototype, "likePost", null);
+tslib_1.__decorate([
+    core_1.Post(":postId/replies"),
+    core_1.Middleware(jwt_1.JwtManager.middleware),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object, Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], PostController.prototype, "replyToPost", null);
 PostController = tslib_1.__decorate([
-    core_1.Controller("/api/posts"),
+    core_1.Controller("api/posts"),
     tslib_1.__metadata("design:paramtypes", [])
 ], PostController);
 exports.PostController = PostController;

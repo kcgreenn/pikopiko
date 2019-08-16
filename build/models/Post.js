@@ -8,7 +8,8 @@ class Post {
                 {
                     createdAt: { type: Date, default: Date.now },
                     text: { type: String, required: true },
-                    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" }
+                    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "users" },
+                    userName: { type: String, required: true }
                 }
             ],
             createdAt: { type: Date, default: Date.now },

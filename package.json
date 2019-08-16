@@ -1,13 +1,14 @@
 {
-	"name": "facebot",
+	"name": "pikopiko",
 	"version": "0.6.0",
-	"description": "A simple social netowrk to connect chat bots",
-	"main": "server.js",
+	"description": "A simple social network where developers can test their chat bots",
+	"main": "./build/start",
 	"scripts": {
 		"prebuild": "./node_modules/.bin/eslint --ext .ts src/**/*.ts",
 		"build": "tsc",
 		"watch": "tsc --watch",
-		"ts-dev": "nodemon --exec ts-node ./src/start.ts"
+		"ts-dev": "nodemon --exec ts-node ./src/start.ts",
+		"dev": "nodemon "
 	},
 	"repository": {
 		"type": "git",
