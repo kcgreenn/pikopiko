@@ -1,62 +1,66 @@
 {
-	"name": "pikopiko",
-	"version": "0.6.0",
-	"description": "A simple social network where developers can test their chat bots",
-	"main": "./build/start",
-	"scripts": {
-		"prebuild": "./node_modules/.bin/eslint --ext .ts src/**/*.ts",
-		"build": "tsc",
-		"watch": "tsc --watch",
-		"ts-dev": "nodemon --exec ts-node ./src/start.ts",
-		"dev": "nodemon "
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/kcgreenn/Face-Bot.git"
-	},
-	"keywords": [
-		"react",
-		"express",
-		"mongodb",
-		"redux"
-	],
-	"author": "KC Green",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/kcgreenn/Face-Bot/issues"
-	},
-	"homepage": "https://github.com/kcgreenn/Face-Bot#readme",
-	"dependencies": {
-		"@overnightjs/core": "^1.6.9",
-		"@overnightjs/jwt": "^1.1.14",
-		"@overnightjs/logger": "^1.1.9",
-		"bcryptjs": "^2.4.3",
-		"body-parser": "^1.19.0",
-		"concurrently": "^4.1.1",
-		"dotenv": "^8.0.0",
-		"express": "^4.17.1",
-		"http-status-codes": "^1.3.2",
-		"mongoose": "^5.6.6",
-		"validator": "^11.1.0",
-		"winston": "^3.2.1"
-	},
-	"devDependencies": {
-		"@types/bcryptjs": "^2.4.2",
-		"@types/dotenv": "^6.1.1",
-		"@types/express": "^4.17.0",
-		"@types/express-jwt": "0.0.42",
-		"@types/http-status-codes": "^1.2.0",
-		"@types/jsonwebtoken": "^8.3.3",
-		"@types/mongoose": "^5.5.12",
-		"@types/node": "^12.7.1",
-		"@types/winston": "^2.4.4",
-		"@typescript-eslint/eslint-plugin": "^1.13.0",
-		"@typescript-eslint/parser": "^1.13.0",
-		"eslint": "^6.1.0",
-		"eslint-config-airbnb-base": "^14.0.0",
-		"eslint-plugin-import": "^2.18.2",
-		"nodemon": "^1.19.1",
-		"ts-node": "^8.3.0",
-		"typescript": "^3.5.3"
-	}
+  "name": "pikopiko",
+  "version": "0.6.0",
+  "description": "A simple social network where developers can test their chat bots",
+  "main": "./build/start",
+  "scripts": {
+    "prebuild": "./node_modules/.bin/eslint --ext .ts src/**/*.ts",
+    "client-install": "npm install --prefix client",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "ts-server": "nodemon --exec ts-node ./src/start.ts",
+    "server": "nodemon ",
+    "client": "npm start --prefix client",
+    "start": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kcgreenn/Face-Bot.git"
+  },
+  "keywords": [
+    "typescript",
+    "react",
+    "express",
+    "mongodb",
+    "redux"
+  ],
+  "author": "KC Green",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kcgreenn/Face-Bot/issues"
+  },
+  "homepage": "https://github.com/kcgreenn/Face-Bot#readme",
+  "dependencies": {
+    "@overnightjs/core": "^1.6.9",
+    "@overnightjs/jwt": "^1.1.14",
+    "@overnightjs/logger": "^1.1.9",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "concurrently": "^4.1.1",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "http-status-codes": "^1.3.2",
+    "mongoose": "^5.6.9",
+    "validator": "^11.1.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.0",
+    "@types/express-jwt": "0.0.42",
+    "@types/http-status-codes": "^1.2.0",
+    "@types/jsonwebtoken": "^8.3.3",
+    "@types/mongoose": "^5.5.12",
+    "@types/node": "^12.7.2",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
 }
