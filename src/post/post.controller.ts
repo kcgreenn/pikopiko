@@ -21,24 +21,43 @@ import { async } from 'rxjs/internal/scheduler/async';
 export class PostController {
 	constructor(private readonly postService: PostService) {}
 
+	// @route	GET api/post/all
+	// @desc	Get all posts from newest to oldest; include pagination
+	// @access	Public
+	@Get('all')
+	async(@Request() req: any, @Response() res: any): Promise<Response> {
+		try{
+
+		}catch(err)
+	}
+
+
+	// @route	POST api/post/
+	// @desc	Create a new post as current user
+	// @access	Private
 	@UseGuards(AuthGuard('jwt'))
 	@Post()
 	async createPost(
 		@Request() req: any,
 		@Body() body: any,
-	): Promise<PostEntity> {
+		@Response() res: any,
+	): Promise<Response> {
 		try {
-			return await this.postService.createPost(req.user, body);
+			const post = await this.postService.createPost(req.user, body);
+			return res.status(HttpStatus.CREATED).json(post);
 		} catch (err) {
 			throw err;
 		}
 	}
 
+	// @route	GET api/post/q?username
+	// @desc	Get recent posts from ?username
+	// @access	Public
 	@Get('/q')
 	async getUserPosts(
 		@Query() query: any,
 		@Response() res: any,
-	): Promise<Res> {
+	): Promise<Response> {
 		try {
 			const posts = await this.postService.getUsersPosts(
 				query,
@@ -51,12 +70,15 @@ export class PostController {
 		}
 	}
 
+	// @route	GET api/post/
+	// @desc	Get posts of the current user
+	// @access	Private
 	@UseGuards(AuthGuard('jwt'))
 	@Get()
 	async getCurrentUsersPosts(
 		@Request() req: any,
-		@Response() res: Res,
-	): Promise<Res> {
+		@Response() res: any,
+	): Promise<Response> {
 		try {
 			const posts = await this.postService.getUsersPosts(req.user, 0, 10);
 			return res.status(HttpStatus.CREATED).json(posts);
@@ -65,11 +87,14 @@ export class PostController {
 		}
 	}
 
+	// @route	GET api/post/id/:id
+	// @desc	Get a specific post by postId
+	// @access	Public
 	@Get('id/:id')
 	async getPostById(
 		@Param() params: any,
-		@Response() res: Res,
-	): Promise<Res> {
+		@Response() res: any,
+	): Promise<Response> {
 		try {
 			const post = await this.postService.getPostById(params.id);
 			return res.status(HttpStatus.FOUND).json(post);
@@ -78,13 +103,16 @@ export class PostController {
 		}
 	}
 
+	// @route	POST api/post/like/:id
+	// @desc	Like/unlike post of given id
+	// @access	Private
 	@UseGuards(AuthGuard('jwt'))
 	@Post('like/:postId')
 	async likePost(
 		@Request() req: any,
 		@Param() params: any,
-		@Response() res: Res,
-	): Promise<Res> {
+		@Response() res: any,
+	): Promise<Response> {
 		try {
 			const post = await this.postService.likePost(
 				params.postId,
@@ -96,6 +124,9 @@ export class PostController {
 		}
 	}
 
+	// @route	POST api/post/reply/:id
+	// @desc	Reply to a post of given id
+	// @access	Private
 	@UseGuards(AuthGuard('jwt'))
 	@Post('reply/:postId')
 	async replyToPost(
@@ -103,7 +134,7 @@ export class PostController {
 		@Body() body: any,
 		@Request() req: any,
 		@Response() res: any,
-	): Promise<Res> {
+	): Promise<Response> {
 		try {
 			const post = await this.postService.replyToPost(
 				params.postId,

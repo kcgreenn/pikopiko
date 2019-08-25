@@ -17,17 +17,22 @@ export class PostService {
 		@Inject(ReplyService) private readonly replyService: ReplyService,
 	) {}
 
-	async createPost({ userId, username }, body: any): Promise<Post> {
+	async createPost(
+		{ userId, username },
+		body: any,
+	): Promise<{ message: string }> {
 		try {
+			const { text } = body;
 			// Create new post
-			const newPost = new Post();
-			newPost.text = body.text;
-			newPost.username = username;
-			newPost.likes = [];
-			newPost.replies = [];
-			newPost.user = userId;
-			await this.postRepository.save(newPost);
-			return newPost;
+			await this.postRepository
+				.createQueryBuilder('post')
+				.insert()
+				.into(Post)
+				.values([
+					{ text, username, user: userId, likes: [], replies: [] },
+				])
+				.execute();
+			return { message: 'Post Created' };
 		} catch (err) {
 			throw err;
 		}
@@ -51,6 +56,7 @@ export class PostService {
 			return await this.postRepository
 				.createQueryBuilder('post')
 				.where('post.username = :username', { username })
+				.skip(skip)
 				.orderBy('post.createdDate', 'ASC')
 				.getOne();
 		} catch (err) {
@@ -58,14 +64,15 @@ export class PostService {
 		}
 	}
 
-	async getPostById(postId): Promise<Post> {
+	async getPostById(postId, skip = 0, take = 10): Promise<Post> {
 		try {
 			// return await this.postRepository.findOne({ id: postId });
 			return await this.postRepository
 				.createQueryBuilder('post')
 				.where('post.id = :id', { id: postId })
 				.leftJoinAndSelect('post.replies', 'reply')
-				.take(5)
+				.skip(skip)
+				.take(10)
 				.getOne();
 		} catch (err) {
 			throw err;
@@ -89,18 +96,19 @@ export class PostService {
 		}
 	}
 
-	async replyToPost(postId, username, text): Promise<Post> {
+	async replyToPost(postId, username, text): Promise<Reply> {
 		try {
 			const post: Post = await this.postRepository.findOne({
 				id: postId,
 			});
+			console.log('replyin in post');
 			const reply = await this.replyService.createReply(
 				post,
 				username,
 				text,
 			);
 			await this.postRepository.save(post);
-			return post;
+			return reply;
 		} catch (err) {
 			throw err;
 		}

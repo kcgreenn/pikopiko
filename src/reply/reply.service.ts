@@ -17,6 +17,7 @@ export class ReplyService {
 		text: string,
 	): Promise<Reply> {
 		try {
+			console.log('replyin');
 			const newReply = new Reply();
 			newReply.post = post;
 			newReply.text = text;

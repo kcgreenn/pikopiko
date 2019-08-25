@@ -1,8 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
-import { Repository } from 'typeorm';
-import { User } from '../users/users.entity';
+import { Repository, InsertResult } from 'typeorm';
 import { Post } from '../post/post.entity';
 
 @Injectable()
@@ -10,28 +9,32 @@ export class ProfileService {
 	constructor(
 		@InjectRepository(Profile)
 		private readonly profileRepository: Repository<Profile>,
-		@InjectRepository(User)
-		private readonly userRepository: Repository<User>,
 		@InjectRepository(Post)
 		private readonly postRepository: Repository<Post>,
 	) {}
 
+	// Return profile of given id
 	async getProfile({ userId }): Promise<Profile> {
 		try {
-			return await this.profileRepository.findOne({ user: userId });
+			return await this.profileRepository
+				.createQueryBuilder('profile')
+				.where('profile.id = :id', { id: userId })
+				.getOne();
 		} catch (err) {
 			throw err;
 		}
 	}
 
 	// Create A User Profile
-	async createProfile(): Promise<Profile> {
+	async createProfile(): Promise<InsertResult> {
 		try {
-			const newProfile = new Profile();
-			newProfile.bio = '';
-			newProfile.interests = [];
-			newProfile.following = [];
-			return await this.profileRepository.save(newProfile);
+			const profile = await this.profileRepository
+				.createQueryBuilder()
+				.insert()
+				.into(Profile)
+				.values([{ bio: '', interests: [], following: [] }])
+				.execute();
+			return profile;
 		} catch (err) {
 			throw err;
 		}
@@ -40,16 +43,19 @@ export class ProfileService {
 	// Update Profile Information
 	async updateProfile(
 		{ userId },
-		{ bio, interests, following },
-	): Promise<Profile> {
+		{ bio, interests },
+	): Promise<{ message: string }> {
 		try {
+			// Format interests for simple array db type
 			interests = interests.split(',');
-			following = following.split(',');
-			const profile = await this.profileRepository.findOne(userId);
-			profile.bio = bio;
-			profile.following = following;
-			profile.interests = interests;
-			return await this.profileRepository.save(profile);
+			// Update user's profile
+			await this.profileRepository
+				.createQueryBuilder()
+				.update(Profile)
+				.set({ bio, interests })
+				.where('id = :id', { id: userId })
+				.execute();
+			return { message: 'Updated user\'s profile' };
 		} catch (err) {
 			throw err;
 		}
@@ -58,12 +64,14 @@ export class ProfileService {
 	// Get user's post feed
 	async getFeed(userId: number, skip = 0, take = 1): Promise<any> {
 		try {
+			// Get list of users being followed
 			const profile = await this.profileRepository
 				.createQueryBuilder('profile')
 				.select('profile.following')
 				.where('profile.id = :id', { id: userId })
 				.getOne();
 			const feedList = [];
+			// Get posts from each user, number depending on skip and take for pagination or infinite scrolling
 			for (let i = 0; i < profile.following.length; i++) {
 				const post = await this.postRepository
 					.createQueryBuilder('post')
@@ -83,17 +91,17 @@ export class ProfileService {
 		}
 	}
 
-	// Follow User
+	// Follow or Unfollow a user
 	async followUser(userId: number, userToFollow: string): Promise<Profile> {
 		try {
 			const profile = await this.profileRepository.findOne(userId);
-			// Check if already following
-			const index = profile.following.indexOf(userToFollow);
-			if (index !== -1) {
-				profile.following.splice(index, 1);
-			} else {
-				profile.following.push(userToFollow);
-			}
+			// Unfollow if already following, otherwise follow user
+			profile.following.some((item) => (item = userToFollow))
+				? profile.following.splice(
+						profile.following.indexOf(userToFollow),
+						1,
+				  )
+				: profile.following.push(userToFollow);
 			return await this.profileRepository.save(profile);
 		} catch (err) {
 			throw err;
@@ -101,13 +109,15 @@ export class ProfileService {
 	}
 
 	// Delete Profile
-	async deleteProfile(userId: number): Promise<any> {
+	async deleteProfile(id: number): Promise<any> {
 		try {
-			const profileToBeRemoved = await this.profileRepository.findOne(
-				userId,
-			);
-			await this.profileRepository.remove(profileToBeRemoved);
-			return profileToBeRemoved;
+			await this.profileRepository
+				.createQueryBuilder('profile')
+				.delete()
+				.from(Profile)
+				.where('id = :id', { id })
+				.execute();
+			return { message: 'Profile Deleted' };
 		} catch (err) {
 			throw err;
 		}

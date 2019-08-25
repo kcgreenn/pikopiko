@@ -27,7 +27,10 @@ export class Profile {
 	@Column({ type: 'simple-array', nullable: true })
 	interests: string[];
 
-	@OneToOne((type) => User, (user) => user.profile)
+	@OneToOne((type) => User, (user) => user.profile, {
+		cascade: true,
+		onDelete: 'CASCADE',
+	})
 	user: User;
 
 	@CreateDateColumn()

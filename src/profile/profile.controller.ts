@@ -4,12 +4,13 @@ import {
 	UseGuards,
 	Param,
 	Post,
-	Request,
-	Response,
+	Request as Req,
+	Response as Res,
 	Put,
 	Body,
 	HttpStatus,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { Profile } from '../profile/profile.entity';
 import { ProfileService } from './profile.service';
@@ -17,15 +18,17 @@ import { ProfileService } from './profile.service';
 @Controller('api/profile')
 export class ProfileController {
 	constructor(private readonly profileService: ProfileService) {}
-	// @route   GET /api/profile/:username
+
+	// @route   GET /api/profile/
 	// @desc    Return profile data of username
 	// @access  Private
 	@UseGuards(AuthGuard('jwt'))
 	@Get()
-	async getUserProfile(@Request() req): Promise<Profile> {
+	async getUserProfile(@Req() req, @Res() res: Response): Promise<Response> {
 		try {
 			// call findOne profile service with req.user.userid
-			return await this.profileService.getProfile(req.user.userId);
+			const profile = await this.profileService.getProfile(req.user);
+			return res.status(HttpStatus.FOUND).json(profile);
 		} catch (err) {
 			throw err;
 		}
@@ -37,9 +40,9 @@ export class ProfileController {
 	@UseGuards(AuthGuard('jwt'))
 	@Put()
 	async updateProfile(
-		@Request() req: any,
+		@Req() req: any,
 		@Body() body: any,
-		@Response() res: any,
+		@Res() res: any,
 	): Promise<Profile> {
 		try {
 			const profile = await this.profileService.updateProfile(
@@ -57,7 +60,7 @@ export class ProfileController {
 	// @access  Private
 	@UseGuards(AuthGuard('jwt'))
 	@Post('follow/:username')
-	async follow(@Request() req: any, @Param() params: any) {
+	async follow(@Req() req: any, @Param() params: any) {
 		try {
 			return await this.profileService.followUser(
 				req.user.userId,
@@ -73,7 +76,7 @@ export class ProfileController {
 	// @access  Private
 	@UseGuards(AuthGuard('jwt'))
 	@Get('feed')
-	async getFeed(@Request() req: any, @Response() res: any): Promise<any[]> {
+	async getFeed(@Req() req: any, @Res() res: any): Promise<any[]> {
 		try {
 			const feedList = await this.profileService.getFeed(req.user.userId);
 			return res.status(HttpStatus.FOUND).json(feedList);

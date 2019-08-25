@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult, InsertResult } from 'typeorm';
 import { User } from './users.entity';
 import { hash } from 'bcrypt';
 import { Length, IsString } from 'class-validator';
@@ -21,17 +21,7 @@ export class UsersService {
 		private readonly profileService: ProfileService,
 	) {}
 
-	async findAll(): Promise<User[]> {
-		try {
-			return await this.userRepository
-				.createQueryBuilder('User')
-				.limit(10)
-				.getMany();
-		} catch (err) {
-			throw err;
-		}
-	}
-
+	// Return username with profile and all posts
 	async findOneByName(name: string): Promise<User | undefined> {
 		try {
 			return await this.userRepository
@@ -40,12 +30,12 @@ export class UsersService {
 				.leftJoinAndSelect('user.profile', 'profile')
 				.leftJoinAndSelect('user.posts', 'posts')
 				.getOne();
-			// return await this.userRepository.findOne({ name });
 		} catch (err) {
 			throw err;
 		}
 	}
 
+	// Return userId
 	async findOneById(id: string): Promise<User | undefined> {
 		try {
 			return await this.userRepository.findOne(id);
@@ -54,48 +44,59 @@ export class UsersService {
 		}
 	}
 
-	async findOneByEmail(email: string): Promise<User | undefined> {
+	// Create new user and empty profile
+	async create(body): Promise<{ message: string }> {
 		try {
-			return await this.userRepository.findOne({ email });
-		} catch (err) {
-			throw err;
-		}
-	}
-
-	async create({ name, email, password }): Promise<User | string> {
-		try {
+			const { name, email, password } = body;
 			// Check if name or email are already in use
-			if (await this.findOneByName(name)) {
-				return 'Username is already in use';
-			}
-			if (await this.findOneByEmail(email)) {
-				return 'Email is already in use';
+			const taken = await this.userRepository
+				.createQueryBuilder('user')
+				.where('user.name = :name OR user.email = :email', {
+					name,
+					email,
+				})
+				.getOne();
+			if (taken) {
+				return { message: 'Username or email already registered' };
 			}
 
 			// Hash password before saving to db
 			const hashedPassword = await hash(password, 12);
 
-			// Create empty profile
+			// Create empty profile for user
 			const profile = await this.profileService.createProfile();
-			// Create new user
-			const newUser = new User();
-			newUser.name = name;
-			newUser.email = email;
-			newUser.password = hashedPassword;
-			newUser.posts = [];
-			newUser.profile = profile;
-			return await this.userRepository.save(newUser);
+			await this.userRepository
+				.createQueryBuilder('users')
+				.insert()
+				.into(User)
+				.values([
+					{
+						name,
+						email,
+						password: hashedPassword,
+						posts: [],
+						profile: profile.identifiers[0].id,
+					},
+				])
+				.execute();
+			return { message: 'User Created' };
 		} catch (err) {
 			throw err;
 		}
 	}
 
-	async delete({ userId }): Promise<User> {
+	// Delete user with given id
+	async delete({ userId }): Promise<{ message: string }> {
 		try {
-			const userToRemove = await this.userRepository.findOne(userId);
-			await this.userRepository.remove(userToRemove);
+			await this.userRepository
+				.createQueryBuilder('users')
+				.delete()
+				.from(User)
+				.where('id = :id', { id: userId })
+				.execute();
+			// Delete user's profile
 			await this.profileService.deleteProfile(userId);
-			return userToRemove;
+			return { message: 'User Deleted' };
 		} catch (err) {
 			throw err;
 		}
