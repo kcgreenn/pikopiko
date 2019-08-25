@@ -34,7 +34,13 @@ export class UsersService {
 
 	async findOneByName(name: string): Promise<User | undefined> {
 		try {
-			return await this.userRepository.findOne({ name });
+			return await this.userRepository
+				.createQueryBuilder('user')
+				.where('user.name = :name', { name })
+				.leftJoinAndSelect('user.profile', 'profile')
+				.leftJoinAndSelect('user.posts', 'posts')
+				.getOne();
+			// return await this.userRepository.findOne({ name });
 		} catch (err) {
 			throw err;
 		}
@@ -69,15 +75,15 @@ export class UsersService {
 			// Hash password before saving to db
 			const hashedPassword = await hash(password, 12);
 
-			// create empty profile
+			// Create empty profile
 			const profile = await this.profileService.createProfile();
 			// Create new user
 			const newUser = new User();
 			newUser.name = name;
 			newUser.email = email;
 			newUser.password = hashedPassword;
-			newUser.profile = profile;
 			newUser.posts = [];
+			newUser.profile = profile;
 			return await this.userRepository.save(newUser);
 		} catch (err) {
 			throw err;

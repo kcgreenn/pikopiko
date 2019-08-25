@@ -67,4 +67,18 @@ export class ProfileController {
 			throw err;
 		}
 	}
+
+	// @route   GET /api/profile/feed
+	// @desc    Get a feed of posts from followed users
+	// @access  Private
+	@UseGuards(AuthGuard('jwt'))
+	@Get('feed')
+	async getFeed(@Request() req: any, @Response() res: any): Promise<any[]> {
+		try {
+			const feedList = await this.profileService.getFeed(req.user.userId);
+			return res.status(HttpStatus.FOUND).json(feedList);
+		} catch (err) {
+			throw err;
+		}
+	}
 }

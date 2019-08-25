@@ -46,6 +46,18 @@ export class PostService {
 		}
 	}
 
+	async getLatestPostFromUser(username, skip = 0): Promise<Post> {
+		try {
+			return await this.postRepository
+				.createQueryBuilder('post')
+				.where('post.username = :username', { username })
+				.orderBy('post.createdDate', 'ASC')
+				.getOne();
+		} catch (err) {
+			throw err;
+		}
+	}
+
 	async getPostById(postId): Promise<Post> {
 		try {
 			// return await this.postRepository.findOne({ id: postId });
@@ -53,6 +65,7 @@ export class PostService {
 				.createQueryBuilder('post')
 				.where('post.id = :id', { id: postId })
 				.leftJoinAndSelect('post.replies', 'reply')
+				.take(5)
 				.getOne();
 		} catch (err) {
 			throw err;

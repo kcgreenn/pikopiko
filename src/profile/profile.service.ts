@@ -2,14 +2,18 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from '../users/users.service';
 import { User } from '../users/users.entity';
+import { Post } from '../post/post.entity';
 
 @Injectable()
 export class ProfileService {
 	constructor(
 		@InjectRepository(Profile)
 		private readonly profileRepository: Repository<Profile>,
+		@InjectRepository(User)
+		private readonly userRepository: Repository<User>,
+		@InjectRepository(Post)
+		private readonly postRepository: Repository<Post>,
 	) {}
 
 	async getProfile({ userId }): Promise<Profile> {
@@ -46,6 +50,34 @@ export class ProfileService {
 			profile.following = following;
 			profile.interests = interests;
 			return await this.profileRepository.save(profile);
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	// Get user's post feed
+	async getFeed(userId: number, skip = 0, take = 1): Promise<any> {
+		try {
+			const profile = await this.profileRepository
+				.createQueryBuilder('profile')
+				.select('profile.following')
+				.where('profile.id = :id', { id: userId })
+				.getOne();
+			const feedList = [];
+			for (let i = 0; i < profile.following.length; i++) {
+				const post = await this.postRepository
+					.createQueryBuilder('post')
+					.select('post')
+					.where('post.username = :username', {
+						username: profile.following[i],
+					})
+					.orderBy('post.createdDate', 'DESC')
+					.skip(skip)
+					.take(take)
+					.getMany();
+				feedList.push(post[0]);
+			}
+			return feedList;
 		} catch (err) {
 			throw err;
 		}
