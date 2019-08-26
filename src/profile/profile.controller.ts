@@ -20,7 +20,7 @@ export class ProfileController {
 	constructor(private readonly profileService: ProfileService) {}
 
 	// @route   GET /api/profile/
-	// @desc    Return profile data of username
+	// @desc    Return profile data of logged in user
 	// @access  Private
 	@UseGuards(AuthGuard('jwt'))
 	@Get()

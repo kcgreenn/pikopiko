@@ -57,7 +57,7 @@ export class UsersService {
 				})
 				.getOne();
 			if (taken) {
-				return { message: 'Username or email already registered' };
+				throw { message: 'Username or email already registered' };
 			}
 
 			// Hash password before saving to db

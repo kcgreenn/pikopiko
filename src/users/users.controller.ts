@@ -41,11 +41,14 @@ export class UsersController {
 	async create(
 		@Body() createUserDto: CreateUserDto,
 		@Response() res: res,
-	): Promise<res> {
+	): Promise<any> {
 		try {
-			const message = await this.userService.create(createUserDto);
-
-			return res.status(HttpStatus.CREATED).json(message);
+			const { name, password } = createUserDto;
+			// Create new user
+			await this.userService.create(createUserDto);
+			// Login as new user
+			const user = await this.authService.login({ name, password });
+			return res.status(HttpStatus.CREATED).json(user);
 		} catch (err) {
 			throw new HttpException(
 				{
