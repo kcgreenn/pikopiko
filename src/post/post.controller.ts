@@ -25,12 +25,18 @@ export class PostController {
 	// @desc	Get all posts from newest to oldest; include pagination
 	// @access	Public
 	@Get('all')
-	async(@Request() req: any, @Response() res: any): Promise<Response> {
-		try{
-
-		}catch(err)
+	async getAllRecentPosts(
+		@Request() req: any,
+		@Query() query: any,
+		@Response() res: any,
+	): Promise<Response> {
+		try {
+			const recentPosts = await this.postService.getRecentPosts(query);
+			return res.status(HttpStatus.OK).json(recentPosts);
+		} catch (err) {
+			throw err;
+		}
 	}
-
 
 	// @route	POST api/post/
 	// @desc	Create a new post as current user

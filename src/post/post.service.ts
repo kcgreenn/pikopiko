@@ -113,4 +113,19 @@ export class PostService {
 			throw err;
 		}
 	}
+
+	// Get most recent posts
+	async getRecentPosts({ skip = 0, take = 10 }): Promise<Post[]> {
+		try {
+			const recentPosts = this.postRepository
+				.createQueryBuilder('post')
+				.skip(skip)
+				.take(take)
+				.orderBy('post.createdDate', 'DESC')
+				.getMany();
+			return recentPosts;
+		} catch (err) {
+			throw err;
+		}
+	}
 }
