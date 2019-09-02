@@ -18,7 +18,7 @@ export class PostService {
 	) {}
 
 	async createPost(
-		{ userId, username },
+		{ userId, handle },
 		body: any,
 	): Promise<{ message: string }> {
 		try {
@@ -29,7 +29,7 @@ export class PostService {
 				.insert()
 				.into(Post)
 				.values([
-					{ text, username, user: userId, likes: [], replies: [] },
+					{ text, handle, profile: userId, likes: [], replies: [] },
 				])
 				.execute();
 			return { message: 'Post Created' };

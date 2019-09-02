@@ -25,14 +25,26 @@ export class ProfileService {
 		}
 	}
 
+	// Return profile of given id
+	async getProfileByHandle({ handle }): Promise<Profile> {
+		try {
+			return await this.profileRepository
+				.createQueryBuilder('profile')
+				.where('profile.handle = :handle', { handle })
+				.getOne();
+		} catch (err) {
+			throw err;
+		}
+	}
+
 	// Create A User Profile
-	async createProfile(): Promise<InsertResult> {
+	async createProfile(id: string, handle: string): Promise<InsertResult> {
 		try {
 			const profile = await this.profileRepository
 				.createQueryBuilder()
 				.insert()
 				.into(Profile)
-				.values([{ bio: '', interests: [], following: [] }])
+				.values([{ id, handle, bio: '', interests: [], following: [] }])
 				.execute();
 			return profile;
 		} catch (err) {

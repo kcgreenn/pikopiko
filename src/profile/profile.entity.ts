@@ -1,12 +1,14 @@
 import {
 	Entity,
-	PrimaryGeneratedColumn,
+	PrimaryColumn,
 	Column,
 	OneToOne,
 	JoinColumn,
 	CreateDateColumn,
+	OneToMany,
 } from 'typeorm';
 import { User } from '../users/users.entity';
+import { Post } from '../post/post.entity';
 
 export interface Following {
 	username: string;
@@ -15,8 +17,13 @@ export interface Following {
 
 @Entity('Profile')
 export class Profile {
-	@PrimaryGeneratedColumn()
-	id: number;
+	@PrimaryColumn({
+		type: 'uuid',
+	})
+	id: string;
+
+	@Column({ unique: true })
+	handle: string;
 
 	@Column({ length: 500, nullable: true })
 	bio: string;
@@ -32,6 +39,9 @@ export class Profile {
 		onDelete: 'CASCADE',
 	})
 	user: User;
+
+	@OneToMany((type) => Post, (post) => post.profile)
+	posts: Post[];
 
 	@CreateDateColumn()
 	createdDate: Date;

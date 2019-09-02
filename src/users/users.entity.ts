@@ -7,6 +7,7 @@ import {
 	OneToOne,
 	JoinColumn,
 	OneToMany,
+	PrimaryColumn,
 } from 'typeorm';
 import { Profile } from '../profile/profile.entity';
 import { Post } from '../post/post.entity';
@@ -14,14 +15,11 @@ import { Reply } from '../reply/reply.entity';
 
 @Entity('User')
 export class User {
-	@PrimaryGeneratedColumn()
-	id: number;
-
-	@Column({
-		length: 64,
+	@PrimaryColumn({
 		unique: true,
+		type: 'uuid',
 	})
-	name: string;
+	id: string;
 
 	@Column({
 		unique: true,
@@ -29,16 +27,13 @@ export class User {
 	email: string;
 
 	@Column({
-		length: 64,
+		length: 128,
 	})
 	password: string;
 
 	@OneToOne((type) => Profile)
 	@JoinColumn()
 	profile: Profile;
-
-	@OneToMany((type) => Post, (post) => post.user)
-	posts: Post[];
 
 	@CreateDateColumn()
 	createdDate: Date;

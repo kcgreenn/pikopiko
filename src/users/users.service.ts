@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult, InsertResult } from 'typeorm';
 import { User } from './users.entity';
 import { hash } from 'bcrypt';
-import { Length, IsString } from 'class-validator';
+import { v4 } from 'uuid';
 
 import { Profile } from '../profile/profile.entity';
 import { ProfileService } from '../profile/profile.service';
@@ -21,15 +21,23 @@ export class UsersService {
 		private readonly profileService: ProfileService,
 	) {}
 
+	// Return total users in db
+	countUsers = (): Promise<number> => {
+		return this.userRepository.count();
+	}
+
 	// Return username with profile and all posts
-	async findOneByName(name: string): Promise<User | undefined> {
+	async findOneByEmail(email: string): Promise<User> {
 		try {
-			return await this.userRepository
+			console.log('email?>');
+			const user = await this.userRepository
 				.createQueryBuilder('user')
-				.where('user.name = :name', { name })
+				.where('user.email = :email', { email })
 				.leftJoinAndSelect('user.profile', 'profile')
 				.leftJoinAndSelect('user.posts', 'posts')
 				.getOne();
+			console.log(user);
+			return user;
 		} catch (err) {
 			throw err;
 		}
@@ -45,41 +53,35 @@ export class UsersService {
 	}
 
 	// Create new user and empty profile
-	async create(body): Promise<{ message: string }> {
+	async create({ handle, email, password }): Promise<InsertResult | null> {
 		try {
-			const { name, email, password } = body;
-			// Check if name or email are already in use
-			const taken = await this.userRepository
-				.createQueryBuilder('user')
-				.where('user.name = :name OR user.email = :email', {
-					name,
-					email,
-				})
-				.getOne();
-			if (taken) {
-				throw { message: 'Username or email already registered' };
-			}
-
+			// Generate uuid for userId
+			const id: string = v4();
 			// Hash password before saving to db
 			const hashedPassword = await hash(password, 12);
 
-			// Create empty profile for user
-			const profile = await this.profileService.createProfile();
-			await this.userRepository
+			const user = await this.userRepository
 				.createQueryBuilder('users')
 				.insert()
 				.into(User)
 				.values([
 					{
-						name,
+						id,
 						email,
 						password: hashedPassword,
-						posts: [],
-						profile: profile.identifiers[0].id,
 					},
 				])
 				.execute();
-			return { message: 'User Created' };
+			// Create empty profile for user
+			await this.profileService.createProfile(id, handle);
+
+			await this.userRepository
+				.createQueryBuilder()
+				.select()
+				.relation(User, 'profile')
+				.of({ id })
+				.set(id);
+			return user;
 		} catch (err) {
 			throw err;
 		}

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { Reply } from '../reply/reply.entity';
+import { Profile } from '../profile/profile.entity';
 
 @Entity('Post')
 export class Post {
@@ -16,11 +17,11 @@ export class Post {
 	id: number;
 
 	@Column()
-	username: string;
+	handle: string;
 
-	@ManyToOne((type) => User, (user) => user.posts)
+	@ManyToOne((type) => Profile, (profile) => profile.posts)
 	@JoinColumn()
-	user: User;
+	profile: Profile;
 
 	@Column({ length: 248 })
 	text: string;

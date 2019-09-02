@@ -10,9 +10,8 @@ export class AuthService {
 		private readonly jwtService: JwtService,
 	) {}
 
-	async validateUser(username: string, password: string): Promise<any> {
-		const user = await this.usersService.findOneByName(username);
-
+	async validateUser(email: string, password: string): Promise<any> {
+		const user = await this.usersService.findOneByEmail(email);
 		if (user) {
 			// Compare hashed passwords
 			const isMatch = await compare(password, user.password);
@@ -25,8 +24,10 @@ export class AuthService {
 		return null;
 	}
 
-	async login(user: any) {
-		const payload = { username: user.name, sub: user.id };
+	async login(user) {
+		console.log('inside authservice.login');
+		const payload = { email: user.email, sub: user.id };
+		console.log(payload);
 		return {
 			access_token: this.jwtService.sign(payload),
 		};

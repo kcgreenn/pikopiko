@@ -2,21 +2,20 @@ import {
 	Controller,
 	Get,
 	Post,
-	Request,
-	Response,
+	Res,
 	Body,
-	Param,
 	HttpException,
 	HttpStatus,
 	Delete,
 	UseGuards,
+	Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './users.entity';
 import { CreateUserDto } from './create-user.dto';
-import { Request as req, Response as res } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
+import { User } from './users.entity';
 
 @Controller('api/users')
 export class UsersController {
@@ -25,12 +24,17 @@ export class UsersController {
 		private readonly authService: AuthService,
 	) {}
 
+	@Get('total')
+	countUsers(): Promise<number> {
+		return this.userService.countUsers();
+	}
+
 	// @route	POST /api/users/login
 	// @desc	Authenitcate user with username and password
 	// @access	Private
 	@UseGuards(AuthGuard('local'))
 	@Post('login')
-	async login(@Request() req) {
+	async login(@Req() req) {
 		return this.authService.login(req.user);
 	}
 
@@ -38,24 +42,14 @@ export class UsersController {
 	// @desc	Create and return a new user with req.body data
 	// @access	Public
 	@Post('register')
-	async create(
-		@Body() createUserDto: CreateUserDto,
-		@Response() res: res,
-	): Promise<any> {
+	async create(@Body() body: CreateUserDto): Promise<any> {
 		try {
-			const { name, password } = createUserDto;
 			// Create new user
-			await this.userService.create(createUserDto);
-			// Login as new user
-			const user = await this.authService.login({ name, password });
-			return res.status(HttpStatus.CREATED).json(user);
+			return await this.userService.create(body);
 		} catch (err) {
 			throw new HttpException(
-				{
-					status: HttpStatus.UNPROCESSABLE_ENTITY,
-					error: err,
-				},
-				422,
+				'Email is already registered',
+				HttpStatus.CONFLICT,
 			);
 		}
 	}
@@ -65,19 +59,12 @@ export class UsersController {
 	// @access	Private
 	@UseGuards(AuthGuard('jwt'))
 	@Delete()
-	async delete(@Request() req, @Response() res: res): Promise<any> {
+	async delete(@Req() req, @Res() res: Response): Promise<any> {
 		try {
 			const message = await this.userService.delete(req.user);
-			return res.status(HttpStatus.OK).json(message);
+			return message;
 		} catch (err) {
-			console.log(err);
-			throw new HttpException(
-				{
-					status: HttpStatus.NOT_FOUND,
-					error: err,
-				},
-				404,
-			);
+			throw err;
 		}
 	}
 }
