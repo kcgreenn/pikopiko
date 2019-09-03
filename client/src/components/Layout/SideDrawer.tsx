@@ -16,6 +16,7 @@ import AddIcon from '@material-ui/icons/Add';
 import FeedIcon from '@material-ui/icons/RssFeed';
 import ProfileIcon from '@material-ui/icons/Contacts';
 import AntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import BlockIcon from '@material-ui/icons/Block';
 
 interface Props {}
 
@@ -85,6 +86,15 @@ const SideDrawer: React.FC<Props> = () => {
         </IconButton>
       ),
       link: '/my-profile'
+    },
+    {
+      title: 'Logout',
+      icon: (
+        <IconButton edge="start">
+          <BlockIcon />
+        </IconButton>
+      ),
+      link: '/logout'
     }
   ];
   return (
@@ -96,7 +106,7 @@ const SideDrawer: React.FC<Props> = () => {
         classes={{ paper: classes.drawerPaper }}
       >
         <List>
-          <ListItem button>
+          <ListItem button component={RouterLink} to="/">
             <AntennaIcon className={classes.menuButton} />
             <Hidden smDown>
               <Typography className={classes.title} variant="h6">
@@ -106,7 +116,7 @@ const SideDrawer: React.FC<Props> = () => {
           </ListItem>
           <Divider className={classes.content} />
           {drawerLinks.map((link, index) => (
-            <ListItem button key={index}>
+            <ListItem button key={index} component={RouterLink} to={link.link}>
               <ListItemIcon>{link.icon}</ListItemIcon>
               <Hidden smDown>
                 <ListItemText>{link.title}</ListItemText>

@@ -1,13 +1,11 @@
 import React from 'react';
-import { Grid, Typography, makeStyles, Button, Paper } from '@material-ui/core';
-import Header from '../Layout/Header';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 import landingBot from '../../img/landingBot.svg';
 import LandingFeed from '../Feed/LandingFeed';
+import Login from '../Forms/Login';
+import Register from '../Forms/Register';
 
 interface Props {}
-
-const dtDrawerWidth = 240;
-const mobDrawerWidth = 60;
 
 const useStyles = makeStyles(theme => ({
   '@keyframes bot-hover': {
@@ -20,16 +18,6 @@ const useStyles = makeStyles(theme => ({
     '100%': {
       transform: 'translateY(-5px)'
     }
-  },
-  root: {
-    minHeight: '80vh',
-    width: `calc(100% - ${dtDrawerWidth}px)`,
-    marginLeft: dtDrawerWidth,
-    [theme.breakpoints.down('sm')]: {
-      width: `calc(100% - ${mobDrawerWidth}px)`,
-      marginLeft: mobDrawerWidth
-    },
-    marginTop: '5vh'
   },
   landing: {
     width: '90vw',
@@ -59,7 +47,7 @@ const useStyles = makeStyles(theme => ({
       backgroundRepeat: 'no-repeat',
       position: 'fixed',
       top: '40%',
-      right: '30%',
+      right: '20%',
       width: '20vw',
       height: '40vh',
       animationName: '$bot-hover',
@@ -74,9 +62,8 @@ const Landing: React.FC<Props> = () => {
   const classes = useStyles();
   return (
     <>
-      <Header />
       <div className={classes.landingBot}></div>
-      <Paper className={classes.landing}>
+      <div className={classes.landing}>
         <Grid
           container
           justify="center"
@@ -96,14 +83,10 @@ const Landing: React.FC<Props> = () => {
             </Grid>
             <Grid container item xs={12} spacing={2} justify="flex-start">
               <Grid item xs={12} md={4}>
-                <Button variant="contained" color="primary" fullWidth>
-                  Join Our Community
-                </Button>
+                <Register />
               </Grid>
               <Grid item xs={12} md={4}>
-                <Button variant="outlined" color="primary" fullWidth>
-                  Login
-                </Button>
+                <Login />
               </Grid>
             </Grid>
           </Grid>
@@ -112,7 +95,7 @@ const Landing: React.FC<Props> = () => {
             <LandingFeed />
           </Grid>
         </Grid>
-      </Paper>
+      </div>
     </>
   );
 };
