@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../Layout/Header';
 import SideDrawer from '../Layout/SideDrawer';
-import { Grid, Typography, makeStyles, Input, Button } from '@material-ui/core';
+import { Grid, makeStyles, Typography, Input, Button } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {}
@@ -23,36 +23,23 @@ const useStyles = makeStyles(theme => ({
       marginLeft: '90px',
       paddingLeft: '0'
     }
-  },
-  tCell: {
-    width: '100%'
-  },
-  secondColumn: {
-    [theme.breakpoints.down('sm')]: {
-      marginTop: '64px'
-    }
   }
 }));
 
-const EditProfile: React.FC<Props> = () => {
+const NewPost: React.FC<Props> = () => {
   const classes = useStyles();
-
-  const [profileData, setProfileData] = useState({
-    bio: '',
-    interests: ''
-  });
-
+  const [postData, setPostData] = useState({ topic: '', text: '' });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const target = e.currentTarget.name;
     const value = e.currentTarget.value;
-    setProfileData({
-      ...profileData,
+    setPostData({
+      ...postData,
       [target]: value
     });
   };
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    // TODO dispatch update profile request
+    // TODO dispatch create post request
     // Reset Form
   };
   return (
@@ -72,38 +59,38 @@ const EditProfile: React.FC<Props> = () => {
           <Grid item xs={12} md={9} container>
             <Grid item xs={12}>
               <Typography color="textPrimary" variant="h4">
-                Edit Profile
+                New Post
               </Typography>
-            </Grid>
-          </Grid>
-          <Grid alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={5} md={3}>
-              <Typography variant="h5">Bio:</Typography>
-            </Grid>
-            <Grid item xs={7} md={9}>
-              <Input
-                multiline={true}
-                name="bio"
-                id="bio"
-                onChange={handleInputChange}
-                fullWidth
-                rows={8}
-                value={profileData.bio}
-              ></Input>
             </Grid>
           </Grid>
           <Grid spacing={6} alignItems="baseline" container item xs={12} md={9}>
             <Grid item xs={6} md={3}>
-              <Typography variant="h5">Interests:</Typography>
+              <Typography variant="h5">Topic:</Typography>
             </Grid>
             <Grid item xs={6} md={9}>
               <Input
-                name="interests"
-                id="interests"
+                name="topic"
+                id="topic"
                 onChange={handleInputChange}
                 fullWidth
-                value={profileData.interests}
+                value={postData.topic}
               />
+            </Grid>
+          </Grid>
+          <Grid alignItems="baseline" container item xs={12} md={9}>
+            <Grid item xs={5} md={3}>
+              <Typography variant="h5">Text:</Typography>
+            </Grid>
+            <Grid item xs={7} md={9}>
+              <Input
+                multiline={true}
+                name="text"
+                id="text"
+                onChange={handleInputChange}
+                fullWidth
+                rows={8}
+                value={postData.text}
+              ></Input>
             </Grid>
           </Grid>
           <Grid justify="center" item xs={12} container spacing={10}>
@@ -112,7 +99,7 @@ const EditProfile: React.FC<Props> = () => {
                 fullWidth
                 variant="outlined"
                 component={RouterLink}
-                to="/my-profile"
+                to="/my-feed"
               >
                 Cancel
               </Button>
@@ -124,7 +111,7 @@ const EditProfile: React.FC<Props> = () => {
                 variant="contained"
                 color="primary"
               >
-                Confirm
+                Create Post
               </Button>
             </Grid>
           </Grid>
@@ -134,4 +121,4 @@ const EditProfile: React.FC<Props> = () => {
   );
 };
 
-export default EditProfile;
+export default NewPost;

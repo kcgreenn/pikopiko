@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import SideDrawer from '../Layout/SideDrawer';
 import Header from '../Layout/Header';
+import { Link as RouterLink } from 'react-router-dom';
 
 // TODO add profile props
 interface Props {}
@@ -58,7 +59,13 @@ const Profile: React.FC<Props> = () => {
   const curUserBtn = (
     <>
       <Grid item container xs={12} md={9}>
-        <Button fullWidth color="primary" variant="outlined">
+        <Button
+          fullWidth
+          color="primary"
+          variant="outlined"
+          component={RouterLink}
+          to="/edit-profile"
+        >
           Edit Profile
         </Button>
       </Grid>
@@ -142,7 +149,7 @@ const Profile: React.FC<Props> = () => {
               </>
             ))}
           </List>
-          {otherUserBtn}
+          {curUserBtn}
         </Grid>
       </Grid>
     </>

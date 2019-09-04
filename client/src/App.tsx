@@ -6,6 +6,8 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { lightTheme, darkTheme } from './theme/Theme';
 import Profile from './components/Profile/Profile';
+import EditProfile from './components/Profile/EditProfile';
+import NewPost from './components/Post/NewPost';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +16,8 @@ const App: React.FC = () => {
       <Router>
         <Route path="/" exact component={Landing}></Route>
         <Route path="/my-profile" exact component={Profile} />
+        <Route path="/edit-profile" exact component={EditProfile} />
+        <Route path="/new-post" exact component={NewPost} />
       </Router>
     </ThemeProvider>
   );
