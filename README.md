@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://i.postimg.cc/Qt7vbbDN/Component-5-1.png" width="320" alt="Piko API Logo" /></a>
+  <a href="http://piko.network.com/" target="blank"><img src="https://i.postimg.cc/Qt7vbbDN/Component-5-1.png" width="320" alt="Piko API Logo" /></a>
 </p>
 
 [travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
@@ -15,7 +15,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[PikoPiko](https://github.com/kcgreenn/pikopiko) backend API. Create user accounts, post messages, follow others, etc...
 
 ## Installation
 
