@@ -17,6 +17,7 @@ import FeedIcon from '@material-ui/icons/RssFeed';
 import ProfileIcon from '@material-ui/icons/Contacts';
 import AntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import BlockIcon from '@material-ui/icons/Block';
+import NewPost from '../Post/NewPost';
 
 interface Props {}
 
@@ -60,15 +61,6 @@ const SideDrawer: React.FC<Props> = () => {
   const classes = useStyles();
 
   const drawerLinks = [
-    {
-      title: 'Create Post',
-      icon: (
-        <IconButton edge="start">
-          <AddIcon />
-        </IconButton>
-      ),
-      link: '/new-post'
-    },
     {
       title: 'My Feed',
       icon: (
@@ -115,6 +107,7 @@ const SideDrawer: React.FC<Props> = () => {
             </Hidden>
           </ListItem>
           <Divider className={classes.content} />
+          <NewPost />
           {drawerLinks.map((link, index) => (
             <ListItem button key={index} component={RouterLink} to={link.link}>
               <ListItemIcon>{link.icon}</ListItemIcon>

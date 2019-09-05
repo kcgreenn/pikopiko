@@ -1,122 +1,129 @@
 import React, { useState } from 'react';
-import Header from '../Layout/Header';
-import SideDrawer from '../Layout/SideDrawer';
-import { Grid, makeStyles, Typography, Input, Button } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+
+import {
+  makeStyles,
+  Button,
+  useTheme,
+  useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  ListItemIcon,
+  ListItemText,
+  Hidden,
+  ListItem
+} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 interface Props {}
-
-// Offset drewer width
-const dtDrawerWidth = 240;
-const mobDrawerWidth = 60;
 
 const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '80vh',
-    width: `calc(95% - ${dtDrawerWidth}px)`,
-    marginLeft: dtDrawerWidth,
-    marginTop: '10vh',
-    paddingLeft: '5vw',
     [theme.breakpoints.down('sm')]: {
-      width: `calc(100% - ${mobDrawerWidth}px)`,
-      marginTop: '5vh',
-      marginLeft: '90px',
-      paddingLeft: '0'
+      width: '100vw',
+      overflowX: 'hidden'
     }
   }
 }));
 
 const NewPost: React.FC<Props> = () => {
   const classes = useStyles();
-  const [postData, setPostData] = useState({ topic: '', text: '' });
+
+  const [open, setOpen] = useState(false);
+  const [newPost, setnewPost] = useState({
+    topic: '',
+    text: ''
+  });
+  const [formErrors, setFormErrors] = useState({ email: null, password: null });
+
+  //   Make dialog responsive
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const target = e.currentTarget.name;
     const value = e.currentTarget.value;
-    setPostData({
-      ...postData,
+    setnewPost({
+      ...newPost,
       [target]: value
     });
   };
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    // TODO dispatch create post request
+    // TODO dispatch new post request
     // Reset Form
+    setnewPost({ topic: '', text: '' });
   };
   return (
     <>
-      <Header />
-      <SideDrawer />
-      <Grid alignItems="baseline" container className={classes.root}>
-        <Grid
-          component="form"
-          onSubmit={handleFormSubmit}
-          item
-          container
-          xs={12}
-          md={9}
-          spacing={10}
-        >
-          <Grid item xs={12} md={9} container>
-            <Grid item xs={12}>
-              <Typography color="textPrimary" variant="h4">
-                New Post
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid spacing={6} alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={6} md={3}>
-              <Typography variant="h5">Topic:</Typography>
-            </Grid>
-            <Grid item xs={6} md={9}>
-              <Input
-                name="topic"
-                id="topic"
-                onChange={handleInputChange}
-                fullWidth
-                value={postData.topic}
-              />
-            </Grid>
-          </Grid>
-          <Grid alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={5} md={3}>
-              <Typography variant="h5">Text:</Typography>
-            </Grid>
-            <Grid item xs={7} md={9}>
-              <Input
-                multiline={true}
-                name="text"
-                id="text"
-                onChange={handleInputChange}
-                fullWidth
-                rows={8}
-                value={postData.text}
-              ></Input>
-            </Grid>
-          </Grid>
-          <Grid justify="center" item xs={12} container spacing={10}>
-            <Grid item xs={12} md={4}>
-              <Button
-                fullWidth
-                variant="outlined"
-                component={RouterLink}
-                to="/my-feed"
-              >
+      <ListItem button onClick={handleClickOpen}>
+        <ListItemIcon>
+          <AddIcon />
+        </ListItemIcon>
+        <Hidden>
+          <ListItemText>New Post</ListItemText>
+        </Hidden>
+      </ListItem>
+      <Dialog
+        fullScreen={fullScreen}
+        className={classes.root}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="new-post-dialog-title"
+      >
+        <DialogTitle id="new-post-dialog-title">New Post</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleFormSubmit}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="newPostTopic"
+              label="Topic"
+              name="topic"
+              autoComplete="topic"
+              type="text"
+              fullWidth
+              value={newPost.topic}
+              onChange={handleInputChange}
+            />
+
+            <TextField
+              fullWidth
+              id="new-post-text"
+              type="text"
+              value={newPost.text}
+              name="text"
+              onChange={handleInputChange}
+              autoComplete="new-post-text"
+              label="Text"
+              multiline={true}
+              rows={5}
+            ></TextField>
+            <DialogActions>
+              <Button onClick={handleClose} variant="outlined">
                 Cancel
               </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
               <Button
                 type="submit"
-                fullWidth
+                onClick={handleClose}
                 variant="contained"
                 color="primary"
               >
-                Create Post
+                Submit
               </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -12,6 +12,7 @@ import {
 import SideDrawer from '../Layout/SideDrawer';
 import Header from '../Layout/Header';
 import { Link as RouterLink } from 'react-router-dom';
+import DeleteProfile from './DeleteProfile';
 
 // TODO add profile props
 interface Props {}
@@ -70,9 +71,7 @@ const Profile: React.FC<Props> = () => {
         </Button>
       </Grid>
       <Grid item container xs={12} md={9}>
-        <Button fullWidth color="secondary" variant="contained">
-          Delete Account
-        </Button>
+        <DeleteProfile />
       </Grid>
     </>
   );
