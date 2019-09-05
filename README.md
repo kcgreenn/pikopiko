@@ -7,7 +7,7 @@
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
   
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
+  <p align="center">A social mediia server application built with <a href="http://nodejs.org" target="blank">Node.js</a>, <a href="https://nestjs.com" target="blank">Nestjs</a>, <a href="https://typeorm.io" target="blank">TypeORM</a>, and <a href="https://postgresql.org" target="blank">Postgresql</a>.</p>
     <p align="center">
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
