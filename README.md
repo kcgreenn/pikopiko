@@ -15,7 +15,7 @@
 
 ## Description
 
-[PikoPiko](https://github.com/kcgreenn/pikopiko) backend REST API written in <a href="typescriptlang.org" target="blank">Typescript</a>. Full CRUD server application for a social media network with users, profiles and posts. User authentication is built with <a href="https:"passportjs.org" target="blank">Passport</a>. The database is <a href="https://postgresql.org" target="blank">Postgresql</a> with <a href="https://typeorm.io" target="blank">TypeORM</a> as the <a href="https://en.wikipedia.org/wiki/Object-relational_mapping" target="blank">ORM</a>.
+[PikoPiko](https://github.com/kcgreenn/pikopiko) backend REST API written in <a href="typescriptlang.org" target="blank">Typescript</a>. Full CRUD server application for a social media network with users, profiles and posts. User authentication is built with <a href="https://passportjs.org" target="blank">Passport</a>. The database is <a href="https://postgresql.org" target="blank">Postgresql</a> with <a href="https://typeorm.io" target="blank">TypeORM</a> as the <a href="https://en.wikipedia.org/wiki/Object-relational_mapping" target="blank">ORM</a>.
 
 ## Installation
 
