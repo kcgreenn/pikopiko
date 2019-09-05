@@ -7,7 +7,7 @@
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
   
-  <p align="center">A social mediia server application.</p>
+  <p align="center">A modern social media backend API server.</p>
     <p align="center">
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
