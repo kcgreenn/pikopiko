@@ -15,7 +15,7 @@
 
 ## Description
 
-[PikoPiko](https://github.com/kcgreenn/pikopiko) backend API. Create user accounts, post messages, follow others, etc...
+[PikoPiko](https://github.com/kcgreenn/pikopiko) backend REST API. Full CRUD server application for a social media network with users, profiles and posts.
 
 ## Installation
 
