@@ -10,6 +10,8 @@ import { ReplyService } from '../reply/reply.service';
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(Reply)
+    private readonly replyRepository: Repository<Reply>,
     private readonly replyService: ReplyService,
     private readonly profileService: ProfileService,
   ) {}
@@ -34,10 +36,10 @@ export class PostService {
     try {
       const post = await this.postRepository
         .createQueryBuilder('post')
+        .leftJoinAndSelect('post.replies', 'reply')
         .where('post.id = :id', { id })
-        .leftJoinAndSelect('post.replies', 'replies')
         .getOne();
-      console.log(post);
+      console.log(post.replies);
       return post;
     } catch (err) {
       throw err;
@@ -90,6 +92,7 @@ export class PostService {
             topic,
             likes: [],
             profile,
+            replies: [],
           },
         ])
         .execute();
@@ -130,13 +133,13 @@ export class PostService {
   ): Promise<Post> {
     try {
       const post = await this.postRepository.findOne(postId);
-      const reply = await this.replyService.createReply(post, text, handle);
-      await this.postRepository
-        .createQueryBuilder('post')
-        .relation(Post, 'replies')
-        .of({ id: postId })
-        .add(reply);
-      return await this.postRepository.findOne(postId);
+      const newReply = new Reply();
+      newReply.handle = handle;
+      newReply.text = text;
+      newReply.post = post;
+      const reply = await this.replyRepository.save(newReply);
+      post.replies.push(reply);
+      return await this.postRepository.save(post);
     } catch (err) {
       throw err;
     }

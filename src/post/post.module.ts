@@ -5,9 +5,15 @@ import { Post } from './post.entity';
 import { PostService } from './post.service';
 import { ProfileModule } from '../profile/profile.module';
 import { ReplyModule } from '../reply/reply.module';
+import { Reply } from '../reply/reply.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), ProfileModule, ReplyModule],
+  imports: [
+    TypeOrmModule.forFeature([Post, Reply]),
+    ProfileModule,
+    ReplyModule,
+    ReplyModule,
+  ],
   controllers: [PostController],
   providers: [PostService],
 })

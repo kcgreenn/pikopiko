@@ -25,7 +25,7 @@ export class User {
   @CreateDateColumn()
   createdDate: Date;
 
-  @OneToOne(type => Profile)
+  @OneToOne(type => Profile, { cascade: true })
   @JoinColumn()
   profile: Profile;
 }

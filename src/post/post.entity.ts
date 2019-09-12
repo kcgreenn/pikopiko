@@ -30,9 +30,9 @@ export class Post {
   @Column({ type: 'simple-array' })
   likes: string[];
 
-  @ManyToOne(type => Profile, profile => profile.posts)
+  @ManyToOne(type => Profile, profile => profile.posts, { cascade: true })
   profile: Profile;
 
-  @OneToMany(type => Reply, reply => reply.post)
+  @OneToMany(type => Reply, reply => reply.post, { cascade: true })
   replies: Reply[];
 }
