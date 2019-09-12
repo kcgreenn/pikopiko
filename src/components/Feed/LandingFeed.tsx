@@ -24,7 +24,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '10px'
   },
   avatar: {
-    marginRight: '48px'
+    marginRight: '48px',
+    backgroundColor: theme.palette.primary.light
   }
 }));
 
@@ -32,7 +33,7 @@ const LandingFeed: React.FC<Props> = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography style={{ color: '#f1f1f1' }} variant="h6">
+      <Typography color="inherit" variant="h6">
         Recent Posts
       </Typography>
       <Card raised className={classes.card}>

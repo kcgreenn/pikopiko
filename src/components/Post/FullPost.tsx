@@ -11,7 +11,8 @@ import {
   Badge,
   ListItem,
   ListItemText,
-  List
+  List,
+  Divider
 } from '@material-ui/core';
 import LikeIcon from '@material-ui/icons/ThumbUp';
 import ReplyIcon from '@material-ui/icons/Reply';
@@ -93,6 +94,7 @@ const FullPost: React.FC<Props> = ({ match }) => {
     likes: [],
     replies: []
   };
+  const [showReplyForm, setShowReplyForm] = useState(false);
   const [liked, setLiked] = useState(false);
   const [post, setPost] = useState(initialPost);
   //   Use authentication context
@@ -128,11 +130,30 @@ const FullPost: React.FC<Props> = ({ match }) => {
   let replyList: any[] = [];
   if (post.replies.length > 0) {
     replyList = post.replies.map((item: ReplyInterface) => (
-      <ListItem alignItems="flex-start">
-        <ListItemText primary={item.handle}>
-          <Typography>{item.text}</Typography>
-        </ListItemText>
-      </ListItem>
+      <React.Fragment key={item.id}>
+        <ListItem alignItems="flex-start">
+          <ListItemText
+            primary={
+              <>
+                <Typography color="primary" align="left" variant="body2">
+                  {item.handle}
+                </Typography>
+                <span
+                  style={{ float: 'right', fontSize: '0.75rem', color: '#333' }}
+                >
+                  <Moment format="YY/MM/DD HH:mm" date={item.createdDate} />
+                </span>
+              </>
+            }
+            secondary={
+              <Typography align="justify" variant="body1">
+                {item.text}
+              </Typography>
+            }
+          ></ListItemText>
+        </ListItem>
+        <Divider style={{ margin: '30px 0' }} />
+      </React.Fragment>
     ));
   }
 
@@ -145,6 +166,9 @@ const FullPost: React.FC<Props> = ({ match }) => {
     } catch (err) {
       throw err;
     }
+  };
+  const handleShowReplyForm = (): void => {
+    setShowReplyForm(true);
   };
   return (
     <>
@@ -172,6 +196,7 @@ const FullPost: React.FC<Props> = ({ match }) => {
                 {post.text}
               </Typography>
             </CardContent>
+            <Divider style={{ margin: '48px 0' }} />
             <CardActions className={classes.cardActions}>
               <IconButton
                 color={liked ? 'secondary' : 'inherit'}
@@ -182,15 +207,15 @@ const FullPost: React.FC<Props> = ({ match }) => {
                   <LikeIcon />
                 </Badge>
               </IconButton>
-              <IconButton title="Reply To Post">
-                <Badge badgeContent={post.replies} color="secondary">
+              <IconButton onClick={handleShowReplyForm} title="Reply To Post">
+                <Badge badgeContent={post.replies.length} color="secondary">
                   <ReplyIcon />
                 </Badge>
               </IconButton>
             </CardActions>
-            {authCtxt.isAuth && (
+            {authCtxt.isAuth && showReplyForm ? (
               <ReplyForm id={match.params.id} handle={authCtxt.user.handle} />
-            )}
+            ) : null}
             <List>{replyList}</List>
           </Card>
         </Grid>

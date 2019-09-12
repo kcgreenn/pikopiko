@@ -25,6 +25,10 @@ const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '360px'
   },
+  loginBtn: {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary
+  },
   dialogContent: {
     [theme.breakpoints.down('sm')]: {
       marginTop: '10vh'
@@ -89,9 +93,7 @@ const Login: React.FC<Props> = props => {
       <Button
         fullWidth
         variant="contained"
-        style={{
-          backgroundColor: '#f1f1f1'
-        }}
+        className={classes.loginBtn}
         onClick={handleClickOpen}
       >
         Login

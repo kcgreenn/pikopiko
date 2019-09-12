@@ -24,18 +24,21 @@ const useStyles = makeStyles(theme => ({
 
   landing: {
     width: '100vw',
-    height: '90vh',
-    marginTop: '10vh',
+    height: '100vh',
+    paddingTop: '10vh',
+    padding: '5vw',
     overflowX: 'hidden',
     [theme.breakpoints.down('sm')]: {
       padding: '5vh 18px 0 18px',
       width: '100vw',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      backgroundSize: 'cover',
+      backgroundAttachment: 'local'
     },
     background: `url(${landingBG})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'center'
+    backgroundPosition: 'bottom'
   },
   landingFeed: {
     [theme.breakpoints.down('sm')]: {
@@ -76,23 +79,16 @@ const Landing: React.FC<Props> = () => {
             justify="flex-start"
           >
             <Grid item xs={12}>
-              <Typography variant="h2" color="inherit" align="center">
+              <Typography variant="h2" color="inherit" align="left">
                 Piko Piko
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h5"
-                align="center"
-                style={{
-                  color: '#f1f1f1',
-                  textShadow: '1px 2px 3px #333'
-                }}
-              >
+              <Typography variant="h5" align="left" color="inherit">
                 Engage, Enlighten, Encourage and especially…just be yourself!
               </Typography>
             </Grid>
-            <Grid container item xs={12} spacing={2} justify="center">
+            <Grid container item xs={12} spacing={2} justify="flex-start">
               <Grid item xs={12} md={4}>
                 <Register />
               </Grid>

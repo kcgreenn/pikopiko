@@ -15,7 +15,7 @@ import {
   Hidden,
   ListItem
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/AddCircle';
+import AddIcon from '@material-ui/icons/AddBoxOutlined';
 import { axiosInstance } from '../../App';
 
 interface Props {}

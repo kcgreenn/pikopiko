@@ -36,8 +36,12 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: '0'
     }
   },
-  tCell: {
-    width: '100%'
+  notFound: {
+    marginLeft: `${dtDrawerWidth}px`,
+    marginTop: '64px',
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: `${mobDrawerWidth}px`
+    }
   },
   secondColumn: {
     [theme.breakpoints.down('sm')]: {
@@ -63,15 +67,17 @@ const Profile: React.FC<Props> = ({ match }) => {
       try {
         const res = await axios.get(`/api/profile/${handle}`);
         const { data } = res;
-        const interests = data.interests.join(', ');
-        const following = data.following.join(', ');
-        setProfile({
-          handle: data.handle,
-          bio: data.bio,
-          createdDate: data.createdDate,
-          interests,
-          following
-        });
+        if (data) {
+          const interests = data.interests.join(', ');
+          const following = data.following.join(', ');
+          setProfile({
+            handle: data.handle,
+            bio: data.bio,
+            createdDate: data.createdDate,
+            interests,
+            following
+          });
+        }
       } catch (err) {
         throw err;
       }
@@ -133,58 +139,79 @@ const Profile: React.FC<Props> = ({ match }) => {
     <>
       <Header />
       <SideDrawer />
-      <Grid
-        container
-        justify="flex-start"
-        alignItems="flex-start"
-        className={classes.root}
-      >
-        <Grid item container xs={12} md={9} spacing={4}>
-          <Grid item xs={12} md={9} container>
-            <Grid item xs={12}>
-              <Typography color="textPrimary" variant="h4">
-                {profile.handle}'s Profile
-              </Typography>
-            </Grid>
-          </Grid>
-          <Divider />
-          <Grid alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h5">Bio:</Typography>
-            </Grid>
-            <Grid item xs={12} md={9}>
-              <Typography variant="body1">{profile.bio}</Typography>
-            </Grid>
-          </Grid>
-          <Divider />
-          <Grid spacing={0} alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h5">Interests:</Typography>
-            </Grid>
-            <Grid item xs={6} md={9}>
-              <Typography variant="body1">{profile.interests}</Typography>
-            </Grid>
-          </Grid>
-          <Grid spacing={0} alignItems="baseline" container item xs={12} md={9}>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h5">Following:</Typography>
-            </Grid>
-            <Grid item xs={6} md={9}>
-              <Typography variant="body1">{profile.following}</Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+      {profile.handle && (
         <Grid
-          spacing={4}
-          item
           container
-          xs={12}
-          md={2}
-          className={classes.secondColumn}
+          justify="flex-start"
+          alignItems="flex-start"
+          className={classes.root}
         >
-          {profileBtns}
+          <Grid item container xs={12} md={9} spacing={4}>
+            <Grid item xs={12} md={9} container>
+              <Grid item xs={12}>
+                <Typography color="textPrimary" variant="h4">
+                  {profile.handle}'s Profile
+                </Typography>
+              </Grid>
+            </Grid>
+            <Divider />
+            <Grid alignItems="baseline" container item xs={12} md={9}>
+              <Grid item xs={12} md={3}>
+                <Typography variant="h5">Bio:</Typography>
+              </Grid>
+              <Grid item xs={12} md={9}>
+                <Typography variant="body1">{profile.bio}</Typography>
+              </Grid>
+            </Grid>
+            <Divider />
+            <Grid
+              spacing={0}
+              alignItems="baseline"
+              container
+              item
+              xs={12}
+              md={9}
+            >
+              <Grid item xs={12} md={3}>
+                <Typography variant="h5">Interests:</Typography>
+              </Grid>
+              <Grid item xs={6} md={9}>
+                <Typography variant="body1">{profile.interests}</Typography>
+              </Grid>
+            </Grid>
+            <Grid
+              spacing={0}
+              alignItems="baseline"
+              container
+              item
+              xs={12}
+              md={9}
+            >
+              <Grid item xs={12} md={3}>
+                <Typography variant="h5">Following:</Typography>
+              </Grid>
+              <Grid item xs={6} md={9}>
+                <Typography variant="body1">{profile.following}</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid
+            spacing={4}
+            item
+            container
+            xs={12}
+            md={2}
+            className={classes.secondColumn}
+          >
+            {profileBtns}
+          </Grid>
         </Grid>
-      </Grid>
+      )}
+      {!profile.handle && (
+        <Typography className={classes.notFound} variant="h5">
+          Could Not Find User's Profile
+        </Typography>
+      )}
     </>
   );
 };

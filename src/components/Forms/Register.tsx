@@ -27,6 +27,10 @@ const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '360px'
   },
+  registerBtn: {
+    borderColor: theme.palette.background.default,
+    color: '#f1f1f1'
+  },
   dialogContent: {
     [theme.breakpoints.down('sm')]: {
       marginTop: '10vh'
@@ -103,12 +107,8 @@ const Register: React.FC<Props> = () => {
     <>
       <Button
         fullWidth
-        variant="outlined"
-        color="primary"
-        style={{
-          color: '#f1f1f1',
-          borderColor: '#f1f1f1'
-        }}
+        variant="contained"
+        color="secondary"
         onClick={handleClickOpen}
       >
         Join Our Community

@@ -57,7 +57,6 @@ const ReplyForm: React.FC<Props> = ({ id, handle }) => {
         <TextField
           onChange={handleInputChange}
           required
-          autoFocus
           id="replyText"
           name="text"
           type="text"

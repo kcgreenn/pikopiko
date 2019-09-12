@@ -62,23 +62,22 @@ const Feed: React.FC<Props> = () => {
 
   const handleLoadMorePosts = async (): Promise<void> => {
     try {
-      console.log('load more');
       if (authCtxt.isAuth) {
         const res = await axiosInstance.get(`/api/profile/feed/q?skip=${skip}`);
-        console.log(res);
+        console.log(res.data);
         const newSkip = skip + 1;
         setSkip(newSkip);
-        if (res.data.length === 0) {
+        if (res.data[0] === null || res.data.length === 0) {
           setHasMorePosts(false);
         } else {
           setFeed([...feed, ...res.data]);
         }
-      } else {
+      }
+      if (authCtxt.isAuth && feed.length < 5) {
         const res = await axiosInstance.get(`/api/post/all/?skip=${skip}`);
-        console.log(res);
         const newSkip = skip + 10;
         setSkip(newSkip);
-        if (res.data.length === 0) {
+        if (res.data[0] === null || res.data.length === 0) {
           setHasMorePosts(false);
         } else {
           setFeed([...feed, ...res.data]);
@@ -123,7 +122,7 @@ const Feed: React.FC<Props> = () => {
       >
         <Grid item xs={12}>
           <Typography variant="h4" align="center" gutterBottom={true}>
-            Post Feed - {feed.length}
+            Post Feed
           </Typography>
         </Grid>
         {!feed && <CircularProgress />}
@@ -143,7 +142,11 @@ const Feed: React.FC<Props> = () => {
           hasMore={hasMorePosts}
           initialScrollY={0}
           endMessage={
-            <Typography variant="h6" align="center">
+            <Typography
+              variant="h6"
+              style={{ marginTop: '5vh' }}
+              align="center"
+            >
               No More Posts
             </Typography>
           }
