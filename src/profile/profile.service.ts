@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
 import { Repository, InsertResult } from 'typeorm';
 import { Post } from '../post/post.entity';
+import { pathToFileURL } from 'url';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
   ) {}
 
   async getProfileById(id: string): Promise<Profile> {
@@ -86,11 +89,9 @@ export class ProfileService {
     try {
       const profile = await this.profileRepository.findOne(id);
       // Check if user is already following other user
-      if (profile.following.some(item => item === handle)) {
-        throw new HttpException(
-          'Already following that user.',
-          HttpStatus.CONFLICT,
-        );
+      const index = profile.following.indexOf(handle);
+      if (index > -1) {
+        profile.following.splice(index, 1);
       } else {
         profile.following.push(handle);
         return await this.profileRepository.save(profile);
@@ -121,5 +122,31 @@ export class ProfileService {
       .skip(skip)
       .take(take)
       .getOne();
+  }
+
+  // Get posts from followed users for feed
+  async getFeedPosts(handle: string, skip: number): Promise<Post[]> {
+    try {
+      const profile = await this.profileRepository
+        .createQueryBuilder('profile')
+        .where('handle = :handle', { handle })
+        .getOne();
+      const promises: Promise<Post>[] = await profile.following.map(
+        async (item): Promise<Post> => {
+          const post = await this.postRepository
+            .createQueryBuilder('post')
+            .where('post.handle = :handle', { handle: item })
+            .leftJoinAndSelect('post.replies', 'replies')
+            .orderBy('post.createdDate', 'DESC')
+            .skip(skip)
+            .getOne();
+          return post;
+        },
+      );
+      const feedList = await Promise.all(promises);
+      return feedList;
+    } catch (err) {
+      throw err;
+    }
   }
 }

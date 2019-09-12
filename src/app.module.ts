@@ -21,7 +21,6 @@ import 'dotenv/config';
       database: process.env.DB_DB,
       entities: [join(__dirname, '**/*.entity{.ts,.js}')],
       synchronize: true,
-      logging: true,
     }),
     UserModule,
     AuthModule,

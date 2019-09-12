@@ -19,6 +19,7 @@ export class PostService {
     try {
       return await this.postRepository
         .createQueryBuilder('post')
+        .leftJoinAndSelect('post.replies', 'replies')
         .orderBy('post.createdDate', 'DESC')
         .skip(skip)
         .take(take)
@@ -31,10 +32,13 @@ export class PostService {
   //   Get post by postId
   async getPostById(id: string): Promise<Post> {
     try {
-      return await this.postRepository
-        .createQueryBuilder()
-        .where('id = :id', { id })
+      const post = await this.postRepository
+        .createQueryBuilder('post')
+        .where('post.id = :id', { id })
+        .leftJoinAndSelect('post.replies', 'replies')
         .getOne();
+      console.log(post);
+      return post;
     } catch (err) {
       throw err;
     }

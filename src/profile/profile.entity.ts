@@ -10,16 +10,16 @@ import { Post } from '../post/post.entity';
 
 @Entity('Profile')
 export class Profile {
-  @PrimaryColumn({ type: 'uuid', name: 'profileId' })
+  @PrimaryColumn({ type: 'uuid' })
   id: string;
 
   @CreateDateColumn()
   createdDate: Date;
 
-  @Column({ unique: true, length: 32 })
+  @Column({ unique: true, length: 64 })
   handle: string;
 
-  @Column({ length: 512 })
+  @Column({ length: 1024 })
   bio: string;
 
   @Column({ type: 'simple-array' })

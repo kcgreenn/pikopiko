@@ -18,7 +18,7 @@ export class Reply {
   @Column()
   handle: string;
 
-  @Column({ length: 128 })
+  @Column({ length: 256 })
   text: string;
 
   @ManyToOne(type => Post, post => post.replies)

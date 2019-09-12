@@ -23,8 +23,15 @@ export class UserService {
       throw err;
     }
   }
+  async findByHandle(handle): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ handle });
+    } catch (err) {
+      throw err;
+    }
+  }
 
-  async createUser({ handle, email, password }): Promise<string> {
+  async createUser({ handle, email, password }): Promise<void> {
     try {
       // Check if email is already registered
       const emailIsTaken = await this.findByEmail(email);
@@ -47,12 +54,12 @@ export class UserService {
           .into(User)
           .values({
             id,
+            handle,
             email,
             password: hashedPassword,
             profile: id,
           })
           .execute();
-        return id;
       }
     } catch (err) {
       throw err;

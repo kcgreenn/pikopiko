@@ -6,10 +6,12 @@ import {
   Patch,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Profile } from './profile.entity';
+import { Post } from 'src/post/post.entity';
 
 @Controller('api/profile')
 export class ProfileController {
@@ -65,6 +67,21 @@ export class ProfileController {
       const { id } = req.user;
       const { handle } = params;
       return await this.profileService.followUser(id, handle);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // @route   GET api/profile/feed
+  // @desc    Return array of posts from followed users with pagination
+  // @access  Private
+  @UseGuards(AuthGuard('jwt'))
+  @Get('feed/q?')
+  async getPostFeed(@Query() query, @Req() req): Promise<Post[]> {
+    try {
+      const { handle } = req.user;
+      const { skip } = query;
+      return await this.profileService.getFeedPosts(handle, skip);
     } catch (err) {
       throw err;
     }

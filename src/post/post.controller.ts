@@ -91,7 +91,7 @@ export class PostController {
   // @desc   Like or unlike a post
   // @access Private
   @UseGuards(AuthGuard('jwt'))
-  @Post()
+  @Post('like/:id')
   async likePost(@Req() req, @Param() params): Promise<PostEntity> {
     try {
       return await this.postService.likePost(params.id, req.user.id);
@@ -105,8 +105,13 @@ export class PostController {
   // @access  Private
   @UseGuards(AuthGuard('jwt'))
   @Post('reply/:postId')
-  async replyToPost(@Param() params, @Req() req): Promise<void> {
+  async replyToPost(@Param() params, @Body() body): Promise<PostEntity> {
     try {
+      return await this.postService.replyToPost(
+        body.handle,
+        body.text,
+        params.id,
+      );
     } catch (err) {
       throw err;
     }

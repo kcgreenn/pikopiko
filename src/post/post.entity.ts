@@ -21,7 +21,7 @@ export class Post {
   @Column()
   handle: string;
 
-  @Column({ length: 128 })
+  @Column({ length: 512 })
   text: string;
 
   @Column()

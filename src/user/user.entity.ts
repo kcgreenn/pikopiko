@@ -16,7 +16,10 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ length: 128 })
+  @Column({ unique: true, length: 64 })
+  handle: string;
+
+  @Column({ length: 256 })
   password: string;
 
   @CreateDateColumn()

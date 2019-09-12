@@ -40,7 +40,7 @@ export class AppController {
         email,
         password,
       });
-      return await this.authService.login({ email, password });
+      return await this.authService.login({ handle, password });
     } catch (err) {
       throw err;
     }
