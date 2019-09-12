@@ -1,0 +1,23 @@
+import React from 'react';
+import { AppBar, makeStyles, Toolbar, Grid } from '@material-ui/core';
+
+interface Props {}
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  }
+}));
+
+const Header: React.FC<Props> = () => {
+  const classes = useStyles();
+  return (
+    <AppBar className={classes.root} position="static">
+      <Toolbar>
+        <Grid container justify="flex-end"></Grid>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
