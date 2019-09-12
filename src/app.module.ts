@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppService } from './app.service';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
@@ -27,6 +28,9 @@ import 'dotenv/config';
     ProfileModule,
     PostModule,
     ReplyModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
