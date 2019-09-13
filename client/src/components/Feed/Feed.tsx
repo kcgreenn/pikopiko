@@ -3,7 +3,7 @@ import {
   makeStyles,
   Typography,
   Grid,
-  CircularProgress
+  CircularProgress,
 } from '@material-ui/core';
 import Header from '../Layout/Header';
 import SideDrawer from '../Layout/SideDrawer';
@@ -30,21 +30,22 @@ const useStyles = makeStyles(theme => ({
       width: `calc(100% - ${mobDrawerWidth}px)`,
       marginTop: '5vh',
       marginLeft: '50px',
-      paddingLeft: '0'
-    }
+      paddingLeft: '0',
+    },
   },
   feedList: {
     width: '640px',
     minHeight: '100vh',
     [theme.breakpoints.down('sm')]: {
-      width: '300px'
-    }
-  }
+      width: '300px',
+    },
+  },
 }));
 
 export interface Post {
   id: string;
   handle: string;
+  topic: string;
   text: string;
   replies: ReplyInterface[];
   likes: string[];
@@ -63,10 +64,11 @@ const Feed: React.FC<Props> = () => {
   const handleLoadMorePosts = async (): Promise<void> => {
     try {
       if (authCtxt.isAuth) {
+        authCtxt.setLoading();
         const res = await axiosInstance.get(`/api/profile/feed/q?skip=${skip}`);
-        console.log(res.data);
         const newSkip = skip + 1;
         setSkip(newSkip);
+        authCtxt.clearLoading();
         if (res.data[0] === null || res.data.length === 0) {
           setHasMorePosts(false);
         } else {
@@ -74,9 +76,11 @@ const Feed: React.FC<Props> = () => {
         }
       }
       if (authCtxt.isAuth && feed.length < 5) {
+        authCtxt.setLoading();
         const res = await axiosInstance.get(`/api/post/all/?skip=${skip}`);
         const newSkip = skip + 10;
         setSkip(newSkip);
+        authCtxt.clearLoading();
         if (res.data[0] === null || res.data.length === 0) {
           setHasMorePosts(false);
         } else {
@@ -106,7 +110,7 @@ const Feed: React.FC<Props> = () => {
         throw err;
       }
     })();
-  }, [authCtxt.isAuth]);
+  }, []);
 
   return (
     <>
@@ -133,9 +137,8 @@ const Feed: React.FC<Props> = () => {
             marginLeft: '-30px',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
-            overflow: 'visible'
+            overflow: 'visible',
           }}
           dataLength={feed.length}
           next={handleLoadMorePosts}
@@ -162,6 +165,7 @@ const Feed: React.FC<Props> = () => {
             feed.map((item: Post) => (
               <Post
                 key={item.id}
+                topic={item.topic}
                 id={item.id}
                 handle={item.handle}
                 text={item.text}

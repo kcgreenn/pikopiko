@@ -29,7 +29,7 @@ import 'dotenv/config';
     PostModule,
     ReplyModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
+      rootPath: join(__dirname, '..', 'client', 'build'),
     }),
   ],
   controllers: [AppController],

@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Hidden,
-  Typography
+  Typography,
 } from '@material-ui/core';
 import FeedIcon from '@material-ui/icons/RssFeed';
 import ProfileIcon from '@material-ui/icons/Contacts';
@@ -25,36 +25,26 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex'
+    display: 'flex',
   },
   drawer: {
     [theme.breakpoints.up('md')]: {
       width: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
     },
     [theme.breakpoints.down('sm')]: {
-      width: '60px'
-    }
+      width: '60px',
+    },
   },
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     [theme.breakpoints.up('md')]: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     [theme.breakpoints.down('sm')]: {
-      width: '60px'
-    }
+      width: '60px',
+    },
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  },
-  title: {
-    flexGrow: 1
-  },
-  content: {
-    marginBottom: theme.spacing(6)
-  }
 }));
 
 const SideDrawer: React.FC<Props> = () => {
@@ -74,7 +64,7 @@ const SideDrawer: React.FC<Props> = () => {
           <FeedIcon />
         </IconButton>
       ),
-      link: '/feed'
+      link: '/feed',
     },
     {
       title: 'My Profile',
@@ -83,8 +73,8 @@ const SideDrawer: React.FC<Props> = () => {
           <ProfileIcon />
         </IconButton>
       ),
-      link: `/profile/${authCtxt.isAuth ? authCtxt.user.handle : null}`
-    }
+      link: `/profile/${authCtxt.isAuth ? authCtxt.user.handle : null}`,
+    },
   ];
   return (
     <nav>
@@ -95,16 +85,22 @@ const SideDrawer: React.FC<Props> = () => {
         className={classes.drawer}
         classes={{ paper: classes.drawerPaper }}
       >
-        <List>
-          <ListItem button component={RouterLink} to="/">
-            <AntennaIcon className={classes.menuButton} />
-            <Hidden smDown>
-              <Typography className={classes.title} variant="h6">
-                PikoPiko
-              </Typography>
-            </Hidden>
-          </ListItem>
-          <Divider className={classes.content} />
+        <IconButton>
+          <AntennaIcon />
+          <Hidden smDown>
+            <Typography variant="h6">PikoPiko</Typography>
+          </Hidden>
+        </IconButton>{' '}
+        <Divider style={{ marginTop: '8px' }} />
+        <List
+          style={{
+            height: '75vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+          }}
+        >
           <NewPost />
           {drawerLinks.map((link, index) => (
             <ListItem button key={index} component={RouterLink} to={link.link}>

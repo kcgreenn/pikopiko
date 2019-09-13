@@ -13,7 +13,7 @@ import {
   ListItemIcon,
   ListItemText,
   Hidden,
-  ListItem
+  ListItem,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/AddBoxOutlined';
 import { axiosInstance } from '../../App';
@@ -25,9 +25,9 @@ const useStyles = makeStyles(theme => ({
     minHeight: '80vh',
     [theme.breakpoints.down('sm')]: {
       width: '100vw',
-      overflowX: 'hidden'
-    }
-  }
+      overflowX: 'hidden',
+    },
+  },
 }));
 
 const NewPost: React.FC<Props> = () => {
@@ -35,7 +35,7 @@ const NewPost: React.FC<Props> = () => {
   const [open, setOpen] = useState(false);
   const [newPost, setnewPost] = useState({
     topic: '',
-    text: ''
+    text: '',
   });
 
   //   Make dialog responsive
@@ -53,16 +53,18 @@ const NewPost: React.FC<Props> = () => {
     const value = e.currentTarget.value;
     setnewPost({
       ...newPost,
-      [target]: value
+      [target]: value,
     });
   };
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
-    // TODO dispatch new post request
+    // Pull out topic/hashtag
+    const post: string[] = newPost.text.split('#');
+    // dispatch new post request
     try {
-      await axiosInstance.post('/api/post', newPost);
+      await axiosInstance.post('/api/post', { topic: post[1], text: post[0] });
       handleClose();
       // Reset Form
       setnewPost({ topic: '', text: '' });
@@ -93,18 +95,6 @@ const NewPost: React.FC<Props> = () => {
             <TextField
               autoFocus
               required
-              id="newPostTopic"
-              label="Topic"
-              name="topic"
-              autoComplete="topic"
-              type="text"
-              fullWidth
-              value={newPost.topic}
-              onChange={handleInputChange}
-            />
-
-            <TextField
-              required
               fullWidth
               id="new-post-text"
               type="text"
@@ -114,8 +104,9 @@ const NewPost: React.FC<Props> = () => {
               autoComplete="new-post-text"
               label="Text"
               multiline={true}
+              style={{ minWidth: '300px' }}
               rows={5}
-            ></TextField>
+            />
             <DialogActions>
               <Button onClick={handleClose} variant="outlined">
                 Cancel

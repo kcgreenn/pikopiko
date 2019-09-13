@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions
+  DialogActions,
 } from '@material-ui/core';
 import { axiosInstance } from '../../App';
 
@@ -20,8 +20,8 @@ interface Props {
 const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '360px',
-    maxWidth: '100vw'
-  }
+    maxWidth: '100vw',
+  },
 }));
 
 const EditProfile: React.FC<Props> = ({ bio, interests }) => {
@@ -33,12 +33,12 @@ const EditProfile: React.FC<Props> = ({ bio, interests }) => {
 
   const [profileData, setProfileData] = useState({
     bio: '',
-    interests: ''
+    interests: '',
   });
   useEffect(() => {
     setProfileData({
       bio,
-      interests
+      interests,
     });
   }, [bio, interests]);
   const [open, setOpen] = useState(false);
@@ -54,15 +54,15 @@ const EditProfile: React.FC<Props> = ({ bio, interests }) => {
     const value = e.currentTarget.value;
     setProfileData({
       ...profileData,
-      [target]: value
+      [target]: value,
     });
   };
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     try {
-      // TODO dispatch update profile request
+      // dispatch update profile request
       await axiosInstance.patch('/api/profile', profileData);
       window.location.reload();
     } catch (err) {
@@ -100,15 +100,6 @@ const EditProfile: React.FC<Props> = ({ bio, interests }) => {
               onChange={handleInputChange}
               multiline
               rows={5}
-            />
-            <TextField
-              id="editInterests"
-              label="Interests"
-              name="interests"
-              type="text"
-              fullWidth
-              value={profileData.interests}
-              onChange={handleInputChange}
             />
             <DialogActions>
               <Button type="submit" onClick={handleClose} color="primary">

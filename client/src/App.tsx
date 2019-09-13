@@ -2,12 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 import Landing from './components/Landing/Landing';
-import {
-  CssBaseline,
-  CircularProgress,
-  Modal,
-  makeStyles
-} from '@material-ui/core';
+import { CssBaseline, CircularProgress, makeStyles } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { lightTheme, darkTheme } from './theme/Theme';
 import Profile from './components/Profile/Profile';
@@ -19,16 +14,11 @@ import Feed from './components/Feed/Feed';
 import FullPost from './components/Post/FullPost';
 
 const useStyles = makeStyles({
-  modal: {
-    position: 'relative',
-    width: '100vw',
-    height: '100vh'
-  },
   spinner: {
     position: 'absolute',
     top: '50%',
-    left: '50%'
-  }
+    left: '50%',
+  },
 });
 
 // create an axios instance for app
@@ -49,14 +39,19 @@ const App: React.FC = () => {
         authCtxt.setAlert(response);
       }
       return response;
-    }
+    },
   );
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <Modal open={authCtxt.loading} className={classes.modal}>
-        <CircularProgress className={classes.spinner} color="secondary" />
-      </Modal>
+      {authCtxt.loading && (
+        <CircularProgress
+          size={100}
+          className={classes.spinner}
+          color="primary"
+        />
+      )}
+
       <Alert />
       <Router>
         <ErrorBoundary>

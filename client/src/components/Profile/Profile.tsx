@@ -4,7 +4,7 @@ import {
   Typography,
   makeStyles,
   Divider,
-  Button
+  Button,
 } from '@material-ui/core';
 import SideDrawer from '../Layout/SideDrawer';
 import Header from '../Layout/Header';
@@ -33,21 +33,21 @@ const useStyles = makeStyles(theme => ({
       width: `calc(75% - ${mobDrawerWidth}px)`,
       marginTop: '5vh',
       marginLeft: '90px',
-      paddingLeft: '0'
-    }
+      paddingLeft: '0',
+    },
   },
   notFound: {
     marginLeft: `${dtDrawerWidth}px`,
     marginTop: '64px',
     [theme.breakpoints.down('sm')]: {
-      marginLeft: `${mobDrawerWidth}px`
-    }
+      marginLeft: `${mobDrawerWidth}px`,
+    },
   },
   secondColumn: {
     [theme.breakpoints.down('sm')]: {
-      marginTop: '64px'
-    }
-  }
+      marginTop: '64px',
+    },
+  },
 }));
 
 const Profile: React.FC<Props> = ({ match }) => {
@@ -58,13 +58,14 @@ const Profile: React.FC<Props> = ({ match }) => {
     bio: '',
     createdDate: '',
     interests: '',
-    following: ['']
+    following: [''],
   });
 
   const handle = match.params.handle;
   useEffect(() => {
     (async () => {
       try {
+        authCtxt.setLoading();
         const res = await axios.get(`/api/profile/${handle}`);
         const { data } = res;
         if (data) {
@@ -75,9 +76,10 @@ const Profile: React.FC<Props> = ({ match }) => {
             bio: data.bio,
             createdDate: data.createdDate,
             interests,
-            following
+            following,
           });
         }
+        authCtxt.clearLoading();
       } catch (err) {
         throw err;
       }
@@ -100,10 +102,10 @@ const Profile: React.FC<Props> = ({ match }) => {
   // Buttons for current user's profile
   const curUserBtn = (
     <>
-      <Grid item container xs={12}>
+      <Grid item container xs={12} md={4}>
         <EditProfile bio={profile.bio} interests={profile.interests} />
       </Grid>
-      <Grid item container xs={12}>
+      <Grid item container xs={12} md={4}>
         <DeleteProfile />
       </Grid>
     </>
@@ -112,7 +114,7 @@ const Profile: React.FC<Props> = ({ match }) => {
   // Buttons for other user's profile
   const otherUserBtn = (
     <>
-      <Grid item container xs={12}>
+      <Grid item container xs={12} md={4}>
         <Button
           fullWidth
           color="primary"
@@ -122,7 +124,7 @@ const Profile: React.FC<Props> = ({ match }) => {
           Follow {profile.handle}
         </Button>
       </Grid>
-      <Grid item container xs={12}>
+      <Grid item container xs={12} md={4}>
         <Button fullWidth color="primary" variant="outlined">
           Go To {profile.handle}'s Feed
         </Button>
@@ -173,45 +175,30 @@ const Profile: React.FC<Props> = ({ match }) => {
               md={9}
             >
               <Grid item xs={12} md={3}>
-                <Typography variant="h5">Interests:</Typography>
-              </Grid>
-              <Grid item xs={6} md={9}>
-                <Typography variant="body1">{profile.interests}</Typography>
-              </Grid>
-            </Grid>
-            <Grid
-              spacing={0}
-              alignItems="baseline"
-              container
-              item
-              xs={12}
-              md={9}
-            >
-              <Grid item xs={12} md={3}>
                 <Typography variant="h5">Following:</Typography>
               </Grid>
               <Grid item xs={6} md={9}>
                 <Typography variant="body1">{profile.following}</Typography>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            spacing={4}
-            item
-            container
-            xs={12}
-            md={2}
-            className={classes.secondColumn}
-          >
-            {profileBtns}
+            <Grid
+              spacing={0}
+              item
+              container
+              xs={12}
+              md={9}
+              className={classes.secondColumn}
+            >
+              {profileBtns}
+            </Grid>
           </Grid>
         </Grid>
       )}
-      {!profile.handle && (
+      {!profile.handle && !authCtxt.loading ? (
         <Typography className={classes.notFound} variant="h5">
           Could Not Find User's Profile
         </Typography>
-      )}
+      ) : null}
     </>
   );
 };

@@ -9,7 +9,8 @@ import {
   CardActions,
   Badge,
   IconButton,
-  Button
+  Button,
+  Divider,
 } from '@material-ui/core';
 import LikeIcon from '@material-ui/icons/ThumbUp';
 import ListIcon from '@material-ui/icons/ViewList';
@@ -22,6 +23,7 @@ interface Props {
   id: string;
   handle: string;
   text: string;
+  topic: string;
   replies: number;
   likes: any[];
   createdDate: string;
@@ -31,33 +33,35 @@ const useStyles = makeStyles(theme => ({
   card: {
     marginTop: '12px',
     minWidth: '100%',
+    paddingLeft: '18px',
     width: '100%',
     minHeight: '128px',
     borderRadius: '10px',
     margin: '8px 24px',
     [theme.breakpoints.down('sm')]: {
-      padding: '0'
-    }
+      padding: '0',
+    },
   },
   title: {
-    float: 'left'
+    float: 'left',
   },
   subheader: {
-    float: 'right'
+    float: 'right',
   },
   cardActions: {
     display: 'flex',
-    justifyContent: 'space-evenly'
-  }
+    justifyContent: 'space-evenly',
+  },
 }));
 
 const Post: React.FC<Props> = ({
   id,
   handle,
   text,
+  topic,
   replies,
   likes,
-  createdDate
+  createdDate,
 }) => {
   const classes = useStyles();
 
@@ -83,11 +87,11 @@ const Post: React.FC<Props> = ({
         <CardHeader
           titleTypographyProps={{
             variant: 'h6',
-            className: classes.title
+            className: classes.title,
           }}
           subheaderTypographyProps={{
             variant: 'subtitle2',
-            className: classes.subheader
+            className: classes.subheader,
           }}
           title={
             <Button component={RouterLink} to={`/profile/${handle}`}>
@@ -100,6 +104,8 @@ const Post: React.FC<Props> = ({
           <Typography variant="body1" align="left" gutterBottom>
             {text}
           </Typography>
+          <Divider />
+          <Typography variant="body2">{topic ? '#' + topic : ''}</Typography>
         </CardContent>
         <CardActions className={classes.cardActions}>
           <IconButton

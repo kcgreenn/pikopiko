@@ -1,25 +1,24 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import landingBot from '../../img/landingBot.svg';
 import landingBG from '../../img/landingBG.svg';
 import LandingFeed from '../Feed/LandingFeed';
 import Login from '../Forms/Login';
 import Register from '../Forms/Register';
-import { authContext } from '../../context/auth/AuthProvider';
 
 interface Props {}
 
 const useStyles = makeStyles(theme => ({
   '@keyframes botHover': {
     '0%': {
-      transform: 'translate(0,-5px)'
+      transform: 'translate(0,-5px)',
     },
     '50%': {
-      transform: 'translate(0,5px)'
+      transform: 'translate(0,5px)',
     },
     '100%': {
-      transform: 'translate(0,-5px)'
-    }
+      transform: 'translate(0,-5px)',
+    },
   },
 
   landing: {
@@ -33,17 +32,17 @@ const useStyles = makeStyles(theme => ({
       width: '100vw',
       minHeight: '100vh',
       backgroundSize: 'cover',
-      backgroundAttachment: 'local'
+      backgroundAttachment: 'local',
     },
     background: `url(${landingBG})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'bottom'
+    backgroundPosition: 'bottom',
   },
   landingFeed: {
     [theme.breakpoints.down('sm')]: {
-      margin: '10vh 0'
-    }
+      margin: '10vh 0',
+    },
   },
   landingBot: {
     [theme.breakpoints.up('md')]: {
@@ -57,9 +56,9 @@ const useStyles = makeStyles(theme => ({
       animationName: '$botHover',
       animationDuration: '3s',
       animationIterationCount: 'infinite',
-      animationTimingFunction: 'ease-in-out'
-    }
-  }
+      animationTimingFunction: 'ease-in-out',
+    },
+  },
 }));
 
 const Landing: React.FC<Props> = () => {

@@ -6,7 +6,8 @@ import {
   SET_CURRENT_USER,
   CLEAR_CURRENT_USER,
   SET_LOADING,
-  SET_ALERT
+  CLEAR_LOADING,
+  SET_ALERT,
 } from '../types';
 import handleJwt from '../../utils/handleJWT';
 
@@ -28,6 +29,8 @@ export interface AuthContext {
   logout: any;
   checkLocalToken: any;
   setAlert: any;
+  clearLoading: any;
+  setLoading: any;
 }
 
 export const authContext = createContext<AuthContext>({
@@ -37,7 +40,7 @@ export const authContext = createContext<AuthContext>({
     handle: '',
     email: '',
     exp: Date.now(),
-    iat: Date.now()
+    iat: Date.now(),
   },
   loading: false,
   alert: null,
@@ -45,7 +48,9 @@ export const authContext = createContext<AuthContext>({
   register: null,
   checkLocalToken: null,
   setAlert: null,
-  logout: null
+  logout: null,
+  clearLoading: null,
+  setLoading: null,
 });
 
 interface Props {}
@@ -55,7 +60,7 @@ const AuthProvider: React.FC<Props> = props => {
     isAuth: false,
     user: {},
     loading: false,
-    alert: null
+    alert: null,
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -79,7 +84,7 @@ const AuthProvider: React.FC<Props> = props => {
   const register = async (registerData: any): Promise<string | null> => {
     try {
       setLoading();
-      const res = await axios.post('/register', registerData);
+      await axios.post('/register', registerData);
       return 'Success';
     } catch (err) {
       setAlert(err);
@@ -106,6 +111,11 @@ const AuthProvider: React.FC<Props> = props => {
 
   //   Set Loading
   const setLoading = () => dispatch({ type: SET_LOADING });
+  const clearLoading = () => {
+    setTimeout(() => {
+      dispatch({ type: CLEAR_LOADING });
+    }, 500);
+  };
 
   // Set alert
   const setAlert = (message: string): void => {
@@ -123,7 +133,9 @@ const AuthProvider: React.FC<Props> = props => {
         login: login,
         register: register,
         logout: logout,
-        checkLocalToken: checkLocalToken
+        checkLocalToken: checkLocalToken,
+        setLoading: setLoading,
+        clearLoading: clearLoading,
       }}
     >
       {props.children}

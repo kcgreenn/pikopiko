@@ -13,7 +13,7 @@ import {
   DialogActions,
   makeStyles,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@material-ui/core';
 import ShowIcon from '@material-ui/icons/Visibility';
 import HideIcon from '@material-ui/icons/VisibilityOff';
@@ -23,23 +23,23 @@ interface Props {}
 
 const useStyles = makeStyles(theme => ({
   root: {
-    minHeight: '360px'
+    minHeight: '360px',
   },
   loginBtn: {
     backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.primary
+    color: theme.palette.text.primary,
   },
   dialogContent: {
     [theme.breakpoints.down('sm')]: {
-      marginTop: '10vh'
-    }
+      marginTop: '10vh',
+    },
   },
   dialogActions: {
     marginTop: '5vh',
     [theme.breakpoints.down('sm')]: {
-      margin: '10vh 0'
-    }
-  }
+      margin: '10vh 0',
+    },
+  },
 }));
 
 const Login: React.FC<Props> = props => {
@@ -50,7 +50,7 @@ const Login: React.FC<Props> = props => {
   const [pwShow, setPwShow] = useState(false);
   const [loginData, setLoginData] = useState({
     username: '',
-    password: ''
+    password: '',
   });
 
   //   Make dialog responsive
@@ -71,21 +71,18 @@ const Login: React.FC<Props> = props => {
     const value = e.currentTarget.value;
     setLoginData({
       ...loginData,
-      [target]: value
+      [target]: value,
     });
   };
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     // dispatch login request
-    const res = await authCtxt.login({
+    await authCtxt.login({
       username: loginData.username,
-      password: loginData.password
+      password: loginData.password,
     });
-    if (res) {
-      window.location.href = `/profile/${loginData.username}`;
-    }
   };
 
   return (
@@ -143,7 +140,7 @@ const Login: React.FC<Props> = props => {
                     </IconButton>
                   </InputAdornment>
                 }
-              ></Input>
+              />
             </FormControl>
             <DialogActions className={classes.dialogActions}>
               <Button

@@ -1,37 +1,32 @@
 import React, { useContext } from 'react';
-import {
-  AppBar,
-  makeStyles,
-  Toolbar,
-  Grid,
-  Typography,
-  Button
-} from '@material-ui/core';
+import { AppBar, makeStyles, Toolbar, Grid, Button } from '@material-ui/core';
 import { authContext } from '../../context/auth/AuthProvider';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, withRouter } from 'react-router-dom';
+import LeftArrow from '@material-ui/icons/KeyboardArrowLeft';
 
-interface Props {}
+interface Props {
+  history: any;
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
-  }
+    flexGrow: 1,
+  },
 }));
 
-const Header: React.FC<Props> = () => {
+const Header: React.FC<Props> = ({ history }) => {
   const classes = useStyles();
   const authCtxt = useContext(authContext);
+
+  const handleBack = () => {
+    history.goBack();
+  };
   return (
     <AppBar className={classes.root} position="static">
       <Toolbar>
         <Grid container justify="flex-end">
-          <Button
-            style={{ marginRight: '5vw' }}
-            color="inherit"
-            component={RouterLink}
-            to={`/profile/${authCtxt.user.handle}`}
-          >
-            {authCtxt.user ? authCtxt.user.handle : null}
+          <Button onClick={handleBack} color="inherit" title="Back">
+            <LeftArrow color="inherit" />
           </Button>
         </Grid>
       </Toolbar>
@@ -39,4 +34,4 @@ const Header: React.FC<Props> = () => {
   );
 };
 
-export default Header;
+export default withRouter(Header);

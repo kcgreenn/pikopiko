@@ -14,34 +14,32 @@ import {
   useTheme,
   useMediaQuery,
   makeStyles,
-  Typography
 } from '@material-ui/core';
 import ShowIcon from '@material-ui/icons/Visibility';
 import HideIcon from '@material-ui/icons/VisibilityOff';
 import { authContext } from '../../context/auth/AuthProvider';
-import classes from '*.module.scss';
 
 interface Props {}
 
 const useStyles = makeStyles(theme => ({
   root: {
-    minHeight: '360px'
+    minHeight: '360px',
   },
   registerBtn: {
     borderColor: theme.palette.background.default,
-    color: '#f1f1f1'
+    color: '#f1f1f1',
   },
   dialogContent: {
     [theme.breakpoints.down('sm')]: {
-      marginTop: '10vh'
-    }
+      marginTop: '10vh',
+    },
   },
   dialogActions: {
     marginTop: '5vh',
     [theme.breakpoints.down('sm')]: {
-      margin: '10vh 0'
-    }
-  }
+      margin: '10vh 0',
+    },
+  },
 }));
 
 const Register: React.FC<Props> = () => {
@@ -53,7 +51,7 @@ const Register: React.FC<Props> = () => {
     handle: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   //   Make dialog responsive
@@ -74,11 +72,11 @@ const Register: React.FC<Props> = () => {
     const value = e.currentTarget.value;
     setRegisterData({
       ...registerData,
-      [target]: value
+      [target]: value,
     });
   };
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     try {
@@ -88,15 +86,15 @@ const Register: React.FC<Props> = () => {
         await authCtxt.register({
           handle: registerData.handle,
           email: registerData.email,
-          password: registerData.password
+          password: registerData.password,
         });
         await authCtxt.login({
           username: registerData.handle,
-          password: registerData.password
+          password: registerData.password,
         });
         handleClose();
       } else {
-        // show alert
+        authCtxt.setAlert('Passwords Do Not Match');
       }
     } catch (err) {
       throw err;
@@ -138,7 +136,7 @@ const Register: React.FC<Props> = () => {
               onChange={handleInputChange}
               inputProps={{
                 minLength: 4,
-                maxLength: 32
+                maxLength: 32,
               }}
             />
             <TextField
@@ -157,7 +155,7 @@ const Register: React.FC<Props> = () => {
               <Input
                 inputProps={{
                   minLength: 8,
-                  maxLength: 32
+                  maxLength: 32,
                 }}
                 id="register-password"
                 type={pwShow ? 'text' : 'password'}
@@ -175,7 +173,7 @@ const Register: React.FC<Props> = () => {
                     </IconButton>
                   </InputAdornment>
                 }
-              ></Input>
+              />
             </FormControl>{' '}
             <FormControl fullWidth required>
               <InputLabel htmlFor="register-password-confirm">
@@ -184,7 +182,7 @@ const Register: React.FC<Props> = () => {
               <Input
                 inputProps={{
                   minLength: 8,
-                  maxLength: 32
+                  maxLength: 32,
                 }}
                 id="register-password-confirm"
                 type={pwShow ? 'text' : 'password'}
@@ -202,7 +200,7 @@ const Register: React.FC<Props> = () => {
                     </IconButton>
                   </InputAdornment>
                 }
-              ></Input>
+              />
             </FormControl>
             <DialogActions className={classes.dialogActions}>
               <Button

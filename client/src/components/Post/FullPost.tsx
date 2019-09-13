@@ -9,11 +9,12 @@ import {
   CardActions,
   IconButton,
   Badge,
-  ListItem,
-  ListItemText,
-  List,
-  Divider
+  Divider,
+  Button,
+  Fade,
+  Paper,
 } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import LikeIcon from '@material-ui/icons/ThumbUp';
 import ReplyIcon from '@material-ui/icons/Reply';
 import Moment from 'react-moment';
@@ -23,6 +24,7 @@ import Header from '../Layout/Header';
 import SideDrawer from '../Layout/SideDrawer';
 import ReplyForm from './ReplyForm';
 import { AxiosResponse } from 'axios';
+import ReplyList from './ReplyList';
 
 interface Props {
   match: any;
@@ -31,6 +33,7 @@ interface Post {
   id: number;
   handle: string;
   text: string;
+  topic: string;
   createdDate: number;
   likes: any[];
   replies: any[];
@@ -51,8 +54,8 @@ const useStyles = makeStyles(theme => ({
       width: `calc(100% - ${mobDrawerWidth}px)`,
       marginTop: '5vh',
       marginLeft: '60px',
-      paddingLeft: '0'
-    }
+      paddingLeft: '0',
+    },
   },
   card: {
     padding: '12px 5%',
@@ -62,25 +65,26 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '10px',
 
     [theme.breakpoints.down('sm')]: {
-      padding: '0'
-    }
+      padding: '0',
+    },
   },
   title: {
-    float: 'left'
+    float: 'left',
   },
   subheader: {
-    float: 'right'
+    float: 'right',
   },
   cardActions: {
     display: 'flex',
-    justifyContent: 'space-evenly'
-  }
+    justifyContent: 'space-evenly',
+  },
 }));
 
 export interface ReplyInterface {
   id: string;
   handle: string;
   text: string;
+  topic: string;
   createdDate: Date;
 }
 
@@ -90,9 +94,10 @@ const FullPost: React.FC<Props> = ({ match }) => {
     id: 0,
     handle: '',
     text: '',
+    topic: '',
     createdDate: Date.now(),
     likes: [],
-    replies: []
+    replies: [],
   };
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -103,17 +108,20 @@ const FullPost: React.FC<Props> = ({ match }) => {
   //   Get post data
   useEffect(() => {
     (async () => {
+      authCtxt.setLoading();
       const res: AxiosResponse = await axiosInstance.get(
-        `/api/post/id/${match.params.id}`
+        `/api/post/id/${match.params.id}`,
       );
       setPost({
         id: res.data.id,
         handle: res.data.handle,
+        topic: res.data.topic,
         text: res.data.text,
         createdDate: res.data.createdDate,
         likes: res.data.likes,
-        replies: res.data.replies
+        replies: res.data.replies,
       });
+      authCtxt.clearLoading();
     })();
   }, [match.params.id]);
 
@@ -126,37 +134,6 @@ const FullPost: React.FC<Props> = ({ match }) => {
     }
   }, [post.likes, authCtxt.isAuth, authCtxt.user.sub]);
 
-  //   Create list of replies
-  let replyList: any[] = [];
-  if (post.replies.length > 0) {
-    replyList = post.replies.map((item: ReplyInterface) => (
-      <React.Fragment key={item.id}>
-        <ListItem alignItems="flex-start">
-          <ListItemText
-            primary={
-              <>
-                <Typography color="primary" align="left" variant="body2">
-                  {item.handle}
-                </Typography>
-                <span
-                  style={{ float: 'right', fontSize: '0.75rem', color: '#333' }}
-                >
-                  <Moment format="YY/MM/DD HH:mm" date={item.createdDate} />
-                </span>
-              </>
-            }
-            secondary={
-              <Typography align="justify" variant="body1">
-                {item.text}
-              </Typography>
-            }
-          ></ListItemText>
-        </ListItem>
-        <Divider style={{ margin: '30px 0' }} />
-      </React.Fragment>
-    ));
-  }
-
   //   Like post, must be authenticated
   const handleLikePost = async (): Promise<void> => {
     try {
@@ -168,7 +145,7 @@ const FullPost: React.FC<Props> = ({ match }) => {
     }
   };
   const handleShowReplyForm = (): void => {
-    setShowReplyForm(true);
+    setShowReplyForm(!showReplyForm);
   };
   return (
     <>
@@ -180,13 +157,23 @@ const FullPost: React.FC<Props> = ({ match }) => {
             <CardHeader
               titleTypographyProps={{
                 variant: 'body1',
-                className: classes.title
+                className: classes.title,
               }}
               subheaderTypographyProps={{
                 variant: 'subtitle2',
-                className: classes.subheader
+                className: classes.subheader,
               }}
-              title={post.handle}
+              title={
+                <Button
+                  component={RouterLink}
+                  to={`/profile/${post.handle}`}
+                  color="primary"
+                  variant="text"
+                  style={{ float: 'left' }}
+                >
+                  {post.handle}
+                </Button>
+              }
               subheader={
                 <Moment format="YY/MM/DD HH:mm" date={post.createdDate} />
               }
@@ -195,8 +182,11 @@ const FullPost: React.FC<Props> = ({ match }) => {
               <Typography variant="h6" align="justify">
                 {post.text}
               </Typography>
+              <Divider style={{ margin: '8px 0' }} />
+              <Typography variant="body2">
+                {post.topic ? '#' + post.topic : ''}
+              </Typography>
             </CardContent>
-            <Divider style={{ margin: '48px 0' }} />
             <CardActions className={classes.cardActions}>
               <IconButton
                 color={liked ? 'secondary' : 'inherit'}
@@ -213,10 +203,13 @@ const FullPost: React.FC<Props> = ({ match }) => {
                 </Badge>
               </IconButton>
             </CardActions>
-            {authCtxt.isAuth && showReplyForm ? (
-              <ReplyForm id={match.params.id} handle={authCtxt.user.handle} />
-            ) : null}
-            <List>{replyList}</List>
+            <Fade in={showReplyForm} timeout={500}>
+              <Paper style={{ height: !showReplyForm ? '0' : 'auto' }}>
+                <ReplyForm id={match.params.id} handle={authCtxt.user.handle} />
+              </Paper>
+            </Fade>
+            <Divider />
+            <ReplyList replies={post.replies} />
           </Card>
         </Grid>
       </Grid>

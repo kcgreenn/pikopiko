@@ -8,12 +8,12 @@ interface Props {
   handle: string;
 }
 
-const ReplyForm: React.FC<Props> = ({ id, handle }) => {
+const ReplyForm: React.FC<Props> = ({ id, handle }, props) => {
   // access authentication context
   const authCtxt = useContext(authContext);
   // Create state for form input values
   const [replyData, setReplyData] = useState({
-    text: ''
+    text: '',
   });
 
   // Handle input change in state
@@ -25,7 +25,7 @@ const ReplyForm: React.FC<Props> = ({ id, handle }) => {
 
   // Send Post request on form submission
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     try {
       // Prevent page reload on submission
@@ -34,7 +34,7 @@ const ReplyForm: React.FC<Props> = ({ id, handle }) => {
         const handle = authCtxt.user.handle;
         await axiosInstance.post(`/api/post/reply/${id}`, {
           ...replyData,
-          handle
+          handle,
         });
       }
     } catch (err) {
@@ -42,16 +42,16 @@ const ReplyForm: React.FC<Props> = ({ id, handle }) => {
     }
   };
   return (
-    <>
+    <div {...props}>
       <form
         onSubmit={handleFormSubmit}
         style={{
-          width: '90%',
-          margin: '18px 5%',
+          width: '100%',
+          padding: '24px ',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         <TextField
@@ -63,10 +63,18 @@ const ReplyForm: React.FC<Props> = ({ id, handle }) => {
           label="Reply To Post"
           fullWidth
           multiline
+          rows={2}
         />
-        <Button type="submit">Reply</Button>
+        <Button
+          style={{ margin: '12px 0' }}
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
+          Reply
+        </Button>
       </form>
-    </>
+    </div>
   );
 };
 
