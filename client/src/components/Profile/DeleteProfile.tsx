@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Button,
   Dialog,
@@ -7,14 +7,17 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions
+  DialogActions,
 } from '@material-ui/core';
+import { axiosInstance } from '../../App';
+import { authContext } from '../../context/auth/AuthProvider';
 
 interface Props {}
 
 const DeleteProfile: React.FC<Props> = () => {
   const [open, setOpen] = useState(false);
-  const [deleteData, setDeleteData] = useState({ password: '' });
+  const [deleteData, setDeleteData] = useState({ delete: '' });
+  const authCtxt = useContext(authContext);
   //   Make dialog responsive
   const theme = useTheme();
   const fullscreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -27,12 +30,18 @@ const DeleteProfile: React.FC<Props> = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setDeleteData({
       ...deleteData,
-      [e.currentTarget.name]: e.currentTarget.value
+      [e.currentTarget.name]: e.currentTarget.value,
     });
   };
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleFormSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
-    // TODO send delete request
+    if (deleteData.delete === 'DELETE') {
+      // send delete request
+      await axiosInstance.delete('/api/user');
+      authCtxt.logout();
+    }
   };
 
   return (
@@ -58,22 +67,27 @@ const DeleteProfile: React.FC<Props> = () => {
           <form onSubmit={handleFormSubmit}>
             <TextField
               fullWidth
-              label="Confirm Password"
-              id="delete-password"
-              name="password"
-              value={deleteData.password}
-              type="password"
+              label="Type DELETE To Confirm"
+              id="delete-confirm"
+              name="delete"
+              value={deleteData.delete}
+              type="text"
               onChange={handleInputChange}
             />
+            <DialogActions>
+              <Button fullWidth variant="outlined" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                type="submit"
+                color="primary"
+              >
+                Delete
+              </Button>
+            </DialogActions>
           </form>
-          <DialogActions>
-            <Button fullWidth variant="outlined" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button fullWidth variant="contained" type="submit" color="primary">
-              Delete
-            </Button>
-          </DialogActions>
         </DialogContent>
       </Dialog>
     </>

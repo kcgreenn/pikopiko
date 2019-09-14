@@ -110,7 +110,7 @@ export class PostController {
       return await this.postService.replyToPost(
         body.handle,
         body.text,
-        params.id,
+        params.postId,
       );
     } catch (err) {
       throw err;

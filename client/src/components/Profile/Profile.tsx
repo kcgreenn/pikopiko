@@ -36,6 +36,12 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: '0',
     },
   },
+  profile: {
+    height: '60vh',
+    [theme.breakpoints.down('sm')]: {
+      height: '80vh',
+    },
+  },
   notFound: {
     marginLeft: `${dtDrawerWidth}px`,
     marginTop: '64px',
@@ -148,7 +154,15 @@ const Profile: React.FC<Props> = ({ match }) => {
           alignItems="flex-start"
           className={classes.root}
         >
-          <Grid item container xs={12} md={9} spacing={4}>
+          <Grid
+            item
+            container
+            xs={12}
+            md={9}
+            spacing={0}
+            className={classes.profile}
+            alignContent="space-between"
+          >
             <Grid item xs={12} md={9} container>
               <Grid item xs={12}>
                 <Typography color="textPrimary" variant="h4">
@@ -181,14 +195,7 @@ const Profile: React.FC<Props> = ({ match }) => {
                 <Typography variant="body1">{profile.following}</Typography>
               </Grid>
             </Grid>
-            <Grid
-              spacing={0}
-              item
-              container
-              xs={12}
-              md={9}
-              className={classes.secondColumn}
-            >
+            <Grid spacing={4} item container xs={12} md={9}>
               {profileBtns}
             </Grid>
           </Grid>

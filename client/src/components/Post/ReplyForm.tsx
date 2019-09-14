@@ -32,10 +32,12 @@ const ReplyForm: React.FC<Props> = ({ id, handle }, props) => {
       e.preventDefault();
       if (authCtxt.isAuth) {
         const handle = authCtxt.user.handle;
+        console.log(id);
         await axiosInstance.post(`/api/post/reply/${id}`, {
           ...replyData,
           handle,
         });
+        window.location.reload();
       }
     } catch (err) {
       throw err;

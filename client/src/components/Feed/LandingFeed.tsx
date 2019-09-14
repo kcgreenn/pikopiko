@@ -63,11 +63,11 @@ const LandingFeed: React.FC<Props> = () => {
   }, []);
   return (
     <div className={classes.root}>
-      <Typography color="inherit" variant="h6">
+      <Typography style={{ color: '#f1f1f1' }} variant="h6">
         Recent Posts
       </Typography>
-      {feed[0].handle === '' ? (
-        <CircularProgress />
+      {feed.length < 1 ? (
+        <CircularProgress color="secondary" />
       ) : feed ? (
         feed.map(item => (
           <Card raised className={classes.card}>

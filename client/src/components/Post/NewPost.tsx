@@ -62,10 +62,14 @@ const NewPost: React.FC<Props> = () => {
     e.preventDefault();
     // Pull out topic/hashtag
     const post: string[] = newPost.text.split('#');
+    if (post.length === 1) {
+      post[1] = '';
+    }
     // dispatch new post request
     try {
       await axiosInstance.post('/api/post', { topic: post[1], text: post[0] });
       handleClose();
+      window.location.reload();
       // Reset Form
       setnewPost({ topic: '', text: '' });
     } catch (err) {

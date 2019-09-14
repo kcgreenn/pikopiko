@@ -6,6 +6,7 @@ import {
   ManyToOne,
   JoinTable,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Profile } from '../profile/profile.entity';
 import { Reply } from '../reply/reply.entity';
@@ -30,9 +31,11 @@ export class Post {
   @Column({ type: 'simple-array' })
   likes: string[];
 
-  @ManyToOne(type => Profile, profile => profile.posts, { cascade: true })
+  @ManyToOne(type => Profile, profile => profile.posts)
+  @JoinColumn()
   profile: Profile;
 
-  @OneToMany(type => Reply, reply => reply.post, { cascade: true })
+  @OneToMany(type => Reply, reply => reply.post)
+  @JoinColumn()
   replies: Reply[];
 }

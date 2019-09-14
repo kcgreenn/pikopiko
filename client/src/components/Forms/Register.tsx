@@ -88,11 +88,6 @@ const Register: React.FC<Props> = () => {
           email: registerData.email,
           password: registerData.password,
         });
-        await authCtxt.login({
-          username: registerData.handle,
-          password: registerData.password,
-        });
-        handleClose();
       } else {
         authCtxt.setAlert('Passwords Do Not Match');
       }
@@ -126,6 +121,17 @@ const Register: React.FC<Props> = () => {
             <TextField
               autoFocus
               required
+              id="registerEmail"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              type="email"
+              fullWidth
+              value={registerData.email}
+              onChange={handleInputChange}
+            />
+            <TextField
+              required
               id="registerHandle"
               label="Choose A Username"
               name="handle"
@@ -138,17 +144,6 @@ const Register: React.FC<Props> = () => {
                 minLength: 4,
                 maxLength: 32,
               }}
-            />
-            <TextField
-              required
-              id="registerEmail"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              type="email"
-              fullWidth
-              value={registerData.email}
-              onChange={handleInputChange}
             />
             <FormControl fullWidth required>
               <InputLabel htmlFor="register-password">Password</InputLabel>

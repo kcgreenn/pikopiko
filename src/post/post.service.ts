@@ -39,7 +39,6 @@ export class PostService {
         .leftJoinAndSelect('post.replies', 'reply')
         .where('post.id = :id', { id })
         .getOne();
-      console.log(post.replies);
       return post;
     } catch (err) {
       throw err;
@@ -132,13 +131,22 @@ export class PostService {
     postId: string,
   ): Promise<Post> {
     try {
-      const post = await this.postRepository.findOne(postId);
-      const newReply = new Reply();
-      newReply.handle = handle;
-      newReply.text = text;
-      newReply.post = post;
-      const reply = await this.replyRepository.save(newReply);
-      post.replies.push(reply);
+      // Get post to reply to
+      const post = await this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.replies', 'reply')
+        .where('post.id = :id', { id: postId })
+        .getOne();
+      // insert new reply and return reply id
+      const result: InsertResult = await this.replyRepository
+        .createQueryBuilder()
+        .insert()
+        .into(Reply)
+        .values([{ handle, text, post }])
+        .execute();
+      // return new reply and add to post
+      const reply = await this.replyRepository.findOne(result.identifiers[0]);
+      post.replies = [...post.replies, reply];
       return await this.postRepository.save(post);
     } catch (err) {
       throw err;

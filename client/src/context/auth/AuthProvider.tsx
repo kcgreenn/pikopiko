@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { axiosInstance as axios } from '../../App';
+import { axiosInstance } from '../../App';
 // import { authContext } from './authContext';
 import authReducer from './authReducer';
 import {
@@ -66,29 +66,33 @@ const AuthProvider: React.FC<Props> = props => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // Login User
-  const login = async (loginData: any): Promise<string | null> => {
+  const login = async (loginData: any): Promise<string | void> => {
     try {
       setLoading();
-      const res = await axios.post('/login', loginData);
-      const decoded = handleJwt(res.data.access_token);
-      // Set current user
-      dispatch({ type: SET_CURRENT_USER, payload: decoded });
-      return 'Success';
+      const res = await axiosInstance.post('/login', loginData);
+      if (res.data.access_token) {
+        const decoded = handleJwt(res.data.access_token);
+        // Set current user
+        dispatch({ type: SET_CURRENT_USER, payload: decoded });
+      }
     } catch (err) {
-      setAlert(err);
-      return null;
+      setAlert(err.response.data.message);
     }
   };
 
   // Register User
-  const register = async (registerData: any): Promise<string | null> => {
+  const register = async (registerData: any): Promise<string | void> => {
     try {
       setLoading();
-      await axios.post('/register', registerData);
-      return 'Success';
+      const res = await axiosInstance.post('/register', registerData);
+      if (res) {
+        await login({
+          username: registerData.handle,
+          password: registerData.password,
+        });
+      }
     } catch (err) {
-      setAlert(err);
-      return null;
+      setAlert(err.response.data.message);
     }
   };
 

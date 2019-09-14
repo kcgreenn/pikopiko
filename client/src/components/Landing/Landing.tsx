@@ -24,8 +24,8 @@ const useStyles = makeStyles(theme => ({
   landing: {
     width: '100vw',
     height: '100vh',
-    paddingTop: '10vh',
-    padding: '5vw',
+    padding: '0',
+    margin: '0',
     overflowX: 'hidden',
     [theme.breakpoints.down('sm')]: {
       padding: '5vh 18px 0 18px',
@@ -42,6 +42,12 @@ const useStyles = makeStyles(theme => ({
   landingFeed: {
     [theme.breakpoints.down('sm')]: {
       margin: '10vh 0',
+    },
+  },
+  landingText: {
+    color: '#f1f1f1',
+    [theme.breakpoints.down('sm')]: {
+      color: '#212121',
     },
   },
   landingBot: {
@@ -66,41 +72,54 @@ const Landing: React.FC<Props> = () => {
 
   return (
     <>
-      <div className={classes.landing}>
-        <Grid container spacing={0} justify="space-evenly" alignItems="stretch">
-          <Grid
-            item
-            container
-            spacing={10}
-            xs={12}
-            md={8}
-            alignItems="center"
-            justify="flex-start"
-          >
-            <Grid item xs={12}>
-              <Typography variant="h2" color="inherit" align="left">
-                Piko Piko
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h5" align="left" color="inherit">
-                Engage, Enlighten, Encourage and especially…just be yourself!
-              </Typography>
-            </Grid>
-            <Grid container item xs={12} spacing={2} justify="flex-start">
-              <Grid item xs={12} md={4}>
-                <Register />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Login />
-              </Grid>
-            </Grid>
+      <Grid
+        className={classes.landing}
+        container
+        spacing={0}
+        justify="space-evenly"
+        alignItems="center"
+      >
+        <Grid
+          item
+          container
+          spacing={10}
+          xs={12}
+          md={8}
+          alignItems="center"
+          justify="flex-start"
+        >
+          <Grid item xs={12}>
+            <Typography
+              className={classes.landingText}
+              variant="h2"
+              align="left"
+            >
+              Piko Piko
+            </Typography>
           </Grid>
-          <Grid xs={12} md={3} item className={classes.landingFeed}>
-            <LandingFeed />
+          <Grid item xs={12}>
+            <Typography
+              variant="h5"
+              style={{ color: '#f1f1f1' }}
+              align="left"
+              color="inherit"
+            >
+              Engage, Enlighten, Encourage and especially…just be yourself!
+            </Typography>
+          </Grid>
+          <Grid container item xs={12} spacing={2} justify="flex-start">
+            <Grid item xs={12} md={4}>
+              <Register />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Login />
+            </Grid>
           </Grid>
         </Grid>
-      </div>
+        <Grid xs={12} md={3} item className={classes.landingFeed}>
+          <LandingFeed />
+        </Grid>
+      </Grid>
     </>
   );
 };
