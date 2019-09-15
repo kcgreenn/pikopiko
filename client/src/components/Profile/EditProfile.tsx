@@ -20,7 +20,7 @@ interface Props {
 const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '360px',
-    maxWidth: '100vw',
+    width: '100vw',
   },
 }));
 
@@ -87,7 +87,7 @@ const EditProfile: React.FC<Props> = ({ bio, interests }) => {
         aria-labelledby="edit-profile-title"
       >
         <DialogTitle id="edit-profile-title">Edit Profile</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ minWidth: '350px' }}>
           <form onSubmit={handleFormSubmit}>
             <TextField
               autoFocus

@@ -109,6 +109,9 @@ const AuthProvider: React.FC<Props> = props => {
       const currentTime = Date.now() / 1000;
       if (decoded.exp > currentTime) {
         dispatch({ type: SET_CURRENT_USER, payload: decoded });
+      } else {
+        setAlert('Your session has expired');
+        dispatch({ type: CLEAR_CURRENT_USER });
       }
     }
   };

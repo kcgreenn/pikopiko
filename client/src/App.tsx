@@ -36,7 +36,7 @@ const App: React.FC = () => {
   axiosInstance.interceptors.response.use(
     (response: AxiosResponse): AxiosResponse => {
       if (authCtxt.isAuth && response.status >= 300) {
-        authCtxt.setAlert(response);
+        authCtxt.setAlert(response.statusText);
       }
       return response;
     },
