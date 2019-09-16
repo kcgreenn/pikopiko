@@ -75,6 +75,11 @@ export class PostService {
     }
   }
 
+  // Get trending data
+  // select topic
+  // from "Post"
+  // where "createdDate" > now() - interval '1 hour'
+
   //   Create a new post
   async createPost(id: string, text: string, topic: string): Promise<Post> {
     try {
