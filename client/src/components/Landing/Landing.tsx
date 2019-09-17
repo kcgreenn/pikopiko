@@ -9,60 +9,27 @@ import Register from '../Forms/Register';
 interface Props {}
 
 const useStyles = makeStyles(theme => ({
-  '@keyframes botHover': {
-    '0%': {
-      transform: 'translate(0,-5px)',
-    },
-    '50%': {
-      transform: 'translate(0,5px)',
-    },
-    '100%': {
-      transform: 'translate(0,-5px)',
-    },
-  },
-
   landing: {
     width: '100vw',
     height: '100vh',
     padding: '0',
     margin: '0',
     overflowX: 'hidden',
+    backgroundAttachment: 'local',
     [theme.breakpoints.down('sm')]: {
       padding: '5vh 18px 0 18px',
       width: '100vw',
       minHeight: '100vh',
       backgroundSize: 'cover',
-      backgroundAttachment: 'local',
     },
     background: `url(${landingBG})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'bottom',
   },
   landingFeed: {
+    marginTop: '3vh',
     [theme.breakpoints.down('sm')]: {
       margin: '10vh 0',
-    },
-  },
-  landingText: {
-    color: '#f1f1f1',
-    [theme.breakpoints.down('sm')]: {
-      color: '#212121',
-    },
-  },
-  landingBot: {
-    [theme.breakpoints.up('md')]: {
-      background: `url(${landingBot})`,
-      backgroundRepeat: 'no-repeat',
-      position: 'fixed',
-      top: '40%',
-      right: '20%',
-      width: '20vw',
-      height: '40vh',
-      animationName: '$botHover',
-      animationDuration: '3s',
-      animationIterationCount: 'infinite',
-      animationTimingFunction: 'ease-in-out',
     },
   },
 }));
@@ -90,9 +57,9 @@ const Landing: React.FC<Props> = () => {
         >
           <Grid item xs={12}>
             <Typography
-              className={classes.landingText}
               variant="h2"
               align="left"
+              style={{ color: '#f1f1f1', marginTop: '2vh' }}
             >
               Piko Piko
             </Typography>
@@ -100,9 +67,8 @@ const Landing: React.FC<Props> = () => {
           <Grid item xs={12}>
             <Typography
               variant="h5"
-              style={{ color: '#f1f1f1' }}
+              style={{ color: '#f1f1f1', marginTop: '9vh' }}
               align="left"
-              color="inherit"
             >
               Engage, Enlighten, Encourage and especially…just be yourself!
             </Typography>

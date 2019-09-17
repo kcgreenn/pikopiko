@@ -100,9 +100,8 @@ export class PostService {
           },
         ])
         .execute();
-      const newPost = await this.postRepository.findOne({
-        id: insertResult.identifiers[0].id,
-      });
+      const postId = insertResult.identifiers[0].id;
+      const newPost = await this.getPostById(postId.toString());
       // Pass newly created post to profile
       await this.profileService.savePostToProfile(profile.id, newPost);
       return newPost;

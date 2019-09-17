@@ -64,19 +64,40 @@ const Post: React.FC<Props> = ({
   createdDate,
 }) => {
   const classes = useStyles();
-
+  const [post, setPost] = useState({
+    id,
+    handle,
+    text,
+    topic,
+    replies,
+    likes,
+    createdDate,
+  });
   const [liked, setLiked] = useState(false);
   const authCtxt = useContext(authContext);
+
+  //   Check if current user has liked post, show in ui
   useEffect(() => {
     if (authCtxt.isAuth) {
-      likes.indexOf(authCtxt.user.sub) > -1 ? setLiked(true) : setLiked(false);
+      post.likes.indexOf(authCtxt.user.sub) > -1
+        ? setLiked(true)
+        : setLiked(false);
     }
-  }, []);
+  }, [post.likes, authCtxt.isAuth, authCtxt.user.sub]);
 
   const handleLikePost = async (): Promise<void> => {
     try {
-      await axiosInstance.post(`/api/post/like/${id}`);
-      setLiked(!liked);
+      const res = await axiosInstance.post(`/api/post/like/${post.id}`);
+      const { id, handle, text, topic, likes, replies, createdDate } = res.data;
+      setPost({
+        id,
+        handle,
+        text,
+        topic,
+        likes,
+        replies: replies.length,
+        createdDate,
+      });
     } catch (err) {
       throw err;
     }
@@ -94,18 +115,20 @@ const Post: React.FC<Props> = ({
             className: classes.subheader,
           }}
           title={
-            <Button component={RouterLink} to={`/profile/${handle}`}>
-              {handle}
+            <Button component={RouterLink} to={`/profile/${post.handle}`}>
+              {post.handle}
             </Button>
           }
-          subheader={<Moment format="YY/MM/DD HH:mm" date={createdDate} />}
+          subheader={<Moment format="YY/MM/DD HH:mm" date={post.createdDate} />}
         />
         <CardContent>
           <Typography variant="body1" align="left" gutterBottom>
-            {text}
+            {post.text}
           </Typography>
           <Divider />
-          <Typography variant="body2">{topic ? '#' + topic : ''}</Typography>
+          <Typography variant="body2">
+            {post.topic ? '#' + post.topic : ''}
+          </Typography>
         </CardContent>
         <CardActions className={classes.cardActions}>
           <IconButton
@@ -113,7 +136,7 @@ const Post: React.FC<Props> = ({
             title="Like Post"
             onClick={handleLikePost}
           >
-            <Badge badgeContent={likes.length} color="primary">
+            <Badge badgeContent={post.likes.length} color="primary">
               <LikeIcon />
             </Badge>
           </IconButton>
@@ -121,9 +144,9 @@ const Post: React.FC<Props> = ({
             color="primary"
             title="See Replies"
             component={RouterLink}
-            to={`/post/${id}`}
+            to={`/post/${post.id}`}
           >
-            <Badge badgeContent={replies} color="secondary">
+            <Badge badgeContent={post.replies} color="secondary">
               <ListIcon />
             </Badge>
           </IconButton>

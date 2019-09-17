@@ -15,6 +15,7 @@ import { axiosInstance } from '../../App';
 interface Props {
   bio: string;
   interests: string;
+  updateProfile: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const EditProfile: React.FC<Props> = ({ bio, interests }) => {
+const EditProfile: React.FC<Props> = ({ bio, interests, updateProfile }) => {
   const classes = useStyles();
 
   // make dialog responsive
@@ -63,8 +64,8 @@ const EditProfile: React.FC<Props> = ({ bio, interests }) => {
     e.preventDefault();
     try {
       // dispatch update profile request
-      await axiosInstance.patch('/api/profile', profileData);
-      window.location.reload();
+      const res = await axiosInstance.patch('/api/profile', profileData);
+      updateProfile(res.data);
     } catch (err) {
       throw err;
     }

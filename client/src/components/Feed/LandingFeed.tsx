@@ -23,8 +23,11 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     marginTop: '12px',
-    width: '240px',
+    width: '360px',
     borderRadius: '10px',
+    [theme.breakpoints.down('sm')]: {
+      width: '300px',
+    },
   },
   avatar: {
     marginRight: '48px',
@@ -58,14 +61,12 @@ const LandingFeed: React.FC<Props> = () => {
   useEffect(() => {
     (async () => {
       const res = await axiosInstance.get(`/api/post/all/?skip=0&take=5`);
-      setFeed([...res.data]);
+      const trimmedFeed = res.data.slice(0, 4);
+      setFeed([...trimmedFeed]);
     })();
   }, []);
   return (
     <div className={classes.root}>
-      <Typography style={{ color: '#f1f1f1' }} variant="h6">
-        Recent Posts
-      </Typography>
       {feed.length < 1 ? (
         <CircularProgress color="secondary" />
       ) : feed ? (
@@ -86,6 +87,9 @@ const LandingFeed: React.FC<Props> = () => {
           </Card>
         ))
       ) : null}
+      <Typography variant="h6" style={{ color: '#f1f1f1', marginTop: '3vh' }}>
+        Log In To See More
+      </Typography>
     </div>
   );
 };

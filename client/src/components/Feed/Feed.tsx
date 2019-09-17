@@ -112,10 +112,17 @@ const Feed: React.FC<Props> = () => {
     })();
   }, []);
 
+  // Update feed with new post
+  const handleNewPost = (post: any): void => {
+    const updatedFeed = feed;
+    updatedFeed.unshift(post);
+    setFeed([...updatedFeed]);
+  };
+
   return (
     <>
       <Header />
-      <SideDrawer />
+      <SideDrawer newPost={handleNewPost} />
 
       <Grid
         direction="column"

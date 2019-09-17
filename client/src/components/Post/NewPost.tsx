@@ -18,7 +18,9 @@ import {
 import AddIcon from '@material-ui/icons/AddBoxOutlined';
 import { axiosInstance } from '../../App';
 
-interface Props {}
+interface Props {
+  addPost: any;
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewPost: React.FC<Props> = () => {
+const NewPost: React.FC<Props> = ({ addPost }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [newPost, setnewPost] = useState({
@@ -62,14 +64,18 @@ const NewPost: React.FC<Props> = () => {
     e.preventDefault();
     // Pull out topic/hashtag
     const post: string[] = newPost.text.split('#');
+    // If user did not provide hashtag, set it to empty string
     if (post.length === 1) {
       post[1] = '';
     }
     // dispatch new post request
     try {
-      await axiosInstance.post('/api/post', { topic: post[1], text: post[0] });
+      const res = await axiosInstance.post('/api/post', {
+        topic: post[1],
+        text: post[0],
+      });
+      addPost(res.data);
       handleClose();
-      window.location.reload();
       // Reset Form
       setnewPost({ topic: '', text: '' });
     } catch (err) {

@@ -59,20 +59,13 @@ export class ProfileService {
     }
   }
 
-  async updateProfile(
-    id: string,
-    bio: string,
-    interests: string,
-  ): Promise<Profile> {
+  async updateProfile(id: string, bio: string): Promise<Profile> {
     try {
-      // Split interests csv into array
-      const interestsArray: string[] = interests.split(',');
       await this.profileRepository
         .createQueryBuilder()
         .update(Profile)
         .set({
           bio,
-          interests: interestsArray,
         })
         .where('id = :id', { id })
         .execute();

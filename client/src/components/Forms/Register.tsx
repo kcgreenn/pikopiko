@@ -100,8 +100,11 @@ const Register: React.FC<Props> = () => {
     <>
       <Button
         fullWidth
-        variant="contained"
-        color="secondary"
+        variant="outlined"
+        style={{
+          borderColor: '#f1f1f1',
+          color: '#f1f1f1',
+        }}
         onClick={handleClickOpen}
       >
         Join Our Community

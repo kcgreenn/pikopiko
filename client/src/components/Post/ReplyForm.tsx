@@ -6,9 +6,10 @@ import { TextField, Button } from '@material-ui/core';
 interface Props {
   id: number;
   handle: string;
+  updatePost: any;
 }
 
-const ReplyForm: React.FC<Props> = ({ id, handle }, props) => {
+const ReplyForm: React.FC<Props> = ({ id, handle, updatePost }, props) => {
   // access authentication context
   const authCtxt = useContext(authContext);
   // Create state for form input values
@@ -32,12 +33,11 @@ const ReplyForm: React.FC<Props> = ({ id, handle }, props) => {
       e.preventDefault();
       if (authCtxt.isAuth) {
         const handle = authCtxt.user.handle;
-        console.log(id);
-        await axiosInstance.post(`/api/post/reply/${id}`, {
+        const res = await axiosInstance.post(`/api/post/reply/${id}`, {
           ...replyData,
           handle,
         });
-        window.location.reload();
+        updatePost(res.data);
       }
     } catch (err) {
       throw err;

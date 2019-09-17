@@ -96,20 +96,26 @@ const Profile: React.FC<Props> = ({ match }) => {
     try {
       if (authCtxt.isAuth) {
         await axiosInstance.patch(`/api/profile/follow/${handle}`);
-        window.location.reload();
-      } else {
-        window.location.href = '/';
       }
     } catch (err) {
       throw err;
     }
   };
 
+  // Update profile when user edits profile
+  const handleProfileUpdate = (profile: any): void => {
+    setProfile(profile);
+  };
+
   // Buttons for current user's profile
   const curUserBtn = (
     <>
       <Grid item container xs={12} md={4}>
-        <EditProfile bio={profile.bio} interests={profile.interests} />
+        <EditProfile
+          bio={profile.bio}
+          interests={profile.interests}
+          updateProfile={handleProfileUpdate}
+        />
       </Grid>
       <Grid item container xs={12} md={4}>
         <DeleteProfile />

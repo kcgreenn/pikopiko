@@ -137,15 +137,21 @@ const FullPost: React.FC<Props> = ({ match }) => {
   //   Like post, must be authenticated
   const handleLikePost = async (): Promise<void> => {
     try {
-      await axiosInstance.post(`/api/post/like/${post.id}`);
-      // show liked or not liked with state
-      setLiked(!liked);
+      const res = await axiosInstance.post(`/api/post/like/${post.id}`);
+      // rerender with updated post
+      setPost(res.data);
     } catch (err) {
       throw err;
     }
   };
+  // Toggle visibility of reply form
   const handleShowReplyForm = (): void => {
     setShowReplyForm(!showReplyForm);
+  };
+
+  // Update post when reply is sent
+  const handleUpdatePost = (post: Post): void => {
+    setPost(post);
   };
   return (
     <>
@@ -205,7 +211,11 @@ const FullPost: React.FC<Props> = ({ match }) => {
             </CardActions>
             <Fade in={showReplyForm} timeout={500}>
               <Paper style={{ height: !showReplyForm ? '0' : 'auto' }}>
-                <ReplyForm id={match.params.id} handle={authCtxt.user.handle} />
+                <ReplyForm
+                  id={match.params.id}
+                  handle={authCtxt.user.handle}
+                  updatePost={handleUpdatePost}
+                />
               </Paper>
             </Fade>
             <Divider />

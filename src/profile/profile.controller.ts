@@ -50,8 +50,8 @@ export class ProfileController {
   async updateProfile(@Req() req, @Body() body): Promise<Profile> {
     try {
       const { id } = req.user;
-      const { bio, interests } = body;
-      return await this.profileService.updateProfile(id, bio, interests);
+      const { bio } = body;
+      return await this.profileService.updateProfile(id, bio);
     } catch (err) {
       throw err;
     }

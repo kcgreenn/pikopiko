@@ -19,7 +19,9 @@ import BlockIcon from '@material-ui/icons/Block';
 import NewPost from '../Post/NewPost';
 import { authContext } from '../../context/auth/AuthProvider';
 
-interface Props {}
+interface Props {
+  newPost?: any;
+}
 
 const drawerWidth = 240;
 
@@ -47,12 +49,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SideDrawer: React.FC<Props> = () => {
+const SideDrawer: React.FC<Props> = ({ newPost }) => {
   const classes = useStyles();
   const authCtxt = useContext(authContext);
 
   const handleLogout = (): void => {
-    window.location.href = '/';
     authCtxt.logout();
   };
 
@@ -101,7 +102,7 @@ const SideDrawer: React.FC<Props> = () => {
             alignItems: 'center',
           }}
         >
-          <NewPost />
+          <NewPost addPost={newPost} />
           {drawerLinks.map((link, index) => (
             <ListItem button key={index} component={RouterLink} to={link.link}>
               <ListItemIcon>{link.icon}</ListItemIcon>
